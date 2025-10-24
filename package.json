@@ -1,0 +1,30 @@
+{
+  "name": "onetigray",
+  "version": "1.0.0",
+  "description": "DafiTech.org - Connecting members around the world",
+  "main": "server/index.js",
+  "scripts": {
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "server": "cd server && npm run dev",
+    "client": "cd client && npm start",
+    "build": "cd client && npm run build",
+    "install-all": "npm install && cd server && npm install && cd ../client && npm install",
+    "start": "cd server && npm start",
+    "heroku-postbuild": "npm run install-all && npm run build"
+  },
+  "keywords": [
+    "tigray",
+    "community",
+    "diaspora",
+    "mern"
+  ],
+  "author": "OneTigray Team",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.3",
+    "gridfs-stream": "^1.1.1"
+  }
+}
