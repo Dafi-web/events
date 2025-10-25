@@ -555,9 +555,6 @@ const Home = () => {
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-4 text-center">Mathematics</h3>
               <p className="text-gray-700 text-center mb-4">Grade 5-12 curriculum</p>
-              <div className="text-center">
-                <span className="text-2xl font-bold text-blue-600">$150/month</span>
-              </div>
             </div>
 
             {/* English */}
@@ -567,9 +564,6 @@ const Home = () => {
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-4 text-center">English</h3>
               <p className="text-gray-700 text-center mb-4">Grade 5-12 curriculum</p>
-              <div className="text-center">
-                <span className="text-2xl font-bold text-green-600">$150/month</span>
-              </div>
             </div>
 
             {/* MERN Stack */}
@@ -579,9 +573,6 @@ const Home = () => {
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-4 text-center">MERN Stack</h3>
               <p className="text-gray-700 text-center mb-4">Full-stack web development</p>
-              <div className="text-center">
-                <span className="text-2xl font-bold text-purple-600">$250/month</span>
-              </div>
             </div>
           </div>
 
