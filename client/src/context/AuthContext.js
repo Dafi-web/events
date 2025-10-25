@@ -79,7 +79,10 @@ export const AuthProvider = ({ children }) => {
         payload: res.data,
       });
     } catch (error) {
-      dispatch({ type: 'LOGIN_FAIL' });
+      // Don't treat 401 as a failure for unauthenticated users
+      // Just clear the token and continue as unauthenticated
+      localStorage.removeItem('token');
+      dispatch({ type: 'SET_LOADING', payload: false });
     }
   };
 

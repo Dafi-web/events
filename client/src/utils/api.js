@@ -45,10 +45,18 @@ api.interceptors.response.use(
     console.error('❌ API Error:', error.response?.status, error.config?.url);
     console.error('❌ Error details:', error.response?.data);
     
+    // Only redirect to login for 401 errors on protected routes
     if (error.response?.status === 401) {
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
-      window.location.href = '/login';
+      const protectedRoutes = ['/auth/me', '/profile', '/admin'];
+      const isProtectedRoute = protectedRoutes.some(route => 
+        error.config?.url?.includes(route)
+      );
+      
+      if (isProtectedRoute) {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        window.location.href = '/login';
+      }
     }
     return Promise.reject(error);
   }
