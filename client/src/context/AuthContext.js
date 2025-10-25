@@ -131,7 +131,7 @@ export const AuthProvider = ({ children }) => {
       
       // Handle network errors specifically
       if (error.code === 'NETWORK_ERROR' || error.message === 'Network Error' || !error.response) {
-        message = 'Cannot connect to server. Please check if the server is running on port 4000.';
+        message = 'Cannot connect to server. Please try again later.';
       } else if (error.response?.data) {
         if (error.response.data.msg) {
           message = error.response.data.msg;
