@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Calendar, Newspaper, Users, Heart, MapPin, Clock, ArrowRight, Globe, Users2, Lightbulb, Building2, BookOpen, Zap, Code, Award, TrendingUp, Star, MessageCircle } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import api from '../utils/api';
+import MotivationalSlider from '../components/MotivationalSlider';
 
 const Home = () => {
   const { t } = useLanguage();
@@ -637,6 +638,9 @@ const Home = () => {
           </div>
         </div>
       </section>
+
+      {/* Motivational Messages Slider */}
+      <MotivationalSlider />
 
       {/* Get Involved Section */}
       <section className="relative py-24 overflow-hidden">
