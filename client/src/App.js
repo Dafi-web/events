@@ -18,6 +18,7 @@ import Profile from './pages/Profile';
 import AdminDashboard from './pages/AdminDashboard';
 import AdminTutorials from './pages/AdminTutorials';
 import Tutorials from './pages/Tutorials';
+import TestAPI from './pages/TestAPI';
 import ProtectedRoute from './components/ProtectedRoute';
 import ScrollToTop from './components/ScrollToTop';
 
@@ -41,6 +42,7 @@ function App() {
               <Route path="join" element={<JoinUs />} />
               <Route path="contact" element={<Contact />} />
               <Route path="tutorials" element={<Tutorials />} />
+              <Route path="test-api" element={<TestAPI />} />
               <Route path="login" element={<Login />} />
               <Route path="register" element={<Register />} />
               <Route path="profile" element={
