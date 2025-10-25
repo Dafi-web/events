@@ -5,7 +5,7 @@ services:
     env: node
     plan: free
     rootDir: server
-    buildCommand: npm install --legacy-peer-deps
+    buildCommand: npm install --legacy-peer-deps && npm install
     startCommand: npm start
     healthCheckPath: /health
     envVars:
@@ -13,21 +13,10 @@ services:
         value: production
       - key: PORT
         value: 10000
-      # Add your environment variables from server/.env here
-      # - key: MONGODB_URI
-      #   sync: false
-      # - key: JWT_SECRET
-      #   sync: false
-      # - key: CLOUDINARY_CLOUD_NAME
-      #   sync: false
-      # - key: CLOUDINARY_API_KEY
-      #   sync: false
-      # - key: CLOUDINARY_API_SECRET
-      #   sync: false
-      # - key: STRIPE_SECRET_KEY
-      #   sync: false
-      # - key: EMAIL_USER
-      #   sync: false
-      # - key: EMAIL_PASSWORD
-      #   sync: false
+      - key: MONGODB_URI
+        value: mongodb+srv://dafitech:your_password@cluster0.mongodb.net/dafitech?retryWrites=true&w=majority
+      - key: JWT_SECRET
+        value: your_jwt_secret_here
+      - key: FRONTEND_URL
+        value: https://www.dafitech.org
 
