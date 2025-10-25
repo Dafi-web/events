@@ -12,7 +12,8 @@
     "start": "cd server && npm start",
     "heroku-postbuild": "npm run install-all",
     "render-build": "cd server && npm install --legacy-peer-deps",
-    "render-start": "cd server && npm start"
+    "render-start": "cd server && npm start",
+    "postinstall": "cd server && npm install --legacy-peer-deps"
   },
   "keywords": [
     "tigray",
