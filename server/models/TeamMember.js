@@ -65,3 +65,4 @@ teamMemberSchema.index({ isActive: 1, order: 1 });
 teamMemberSchema.index({ isInstructor: 1 });
 
 module.exports = mongoose.model('TeamMember', teamMemberSchema);
+

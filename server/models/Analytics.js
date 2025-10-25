@@ -145,3 +145,4 @@ analyticsSchema.statics.getPageViews = async function(startDate, endDate) {
 };
 
 module.exports = mongoose.model('Analytics', analyticsSchema);
+

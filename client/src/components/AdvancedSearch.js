@@ -212,3 +212,4 @@ const AdvancedSearch = ({ onSearch, placeholder = "Search...", showFilters = tru
 };
 
 export default AdvancedSearch;
+

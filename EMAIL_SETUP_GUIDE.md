@@ -96,3 +96,4 @@ Check the server console for detailed email status:
 - Never commit your .env file to version control
 - Use app-specific passwords, not your main Gmail password
 - Consider using environment-specific email addresses for testing
+

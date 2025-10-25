@@ -37,3 +37,4 @@ echo ""
 echo "📖 See DEPLOYMENT_GUIDE.md for detailed instructions"
 echo ""
 echo "🌐 Your platform will be live at your custom domain!"
+

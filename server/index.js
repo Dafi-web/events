@@ -52,8 +52,10 @@ const allowedOrigins = process.env.NODE_ENV === 'production'
   ? [
       'https://dafitech.org',
       'https://www.dafitech.org',
-      'https://api.dafitech.org'
-    ]
+      'https://api.dafitech.org',
+      process.env.FRONTEND_URL, // Allow frontend from environment variable
+      ...(process.env.ADDITIONAL_ORIGINS ? process.env.ADDITIONAL_ORIGINS.split(',') : [])
+    ].filter(Boolean) // Remove undefined values
   : [
       'http://localhost:3000',
       'http://localhost:3001', 
@@ -63,13 +65,58 @@ const allowedOrigins = process.env.NODE_ENV === 'production'
     ];
 
 app.use(cors({
-  origin: allowedOrigins,
+  origin: (origin, callback) => {
+    // Allow requests with no origin (like mobile apps, Postman, or server-to-server)
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      console.warn(`⚠️  CORS blocked request from origin: ${origin}`);
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Health check endpoint
+app.get('/health', (req, res) => {
+  const health = {
+    status: 'OK',
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime(),
+    environment: process.env.NODE_ENV,
+    database: mongoose.connection.readyState === 1 ? 'Connected' : 'Disconnected'
+  };
+  res.status(200).json(health);
+});
+
+// API info endpoint
+app.get('/api', (req, res) => {
+  res.json({
+    message: 'DafiTech API',
+    version: '1.0.0',
+    status: 'running',
+    endpoints: [
+      '/api/auth',
+      '/api/users',
+      '/api/events',
+      '/api/news',
+      '/api/directory',
+      '/api/contact',
+      '/api/team',
+      '/api/files',
+      '/api/payments',
+      '/api/comments',
+      '/api/reactions',
+      '/api/tutorials'
+    ]
+  });
+});
 
 // Routes
 app.use('/api/auth', require('./routes/auth'));

@@ -3,10 +3,13 @@ services:
     name: dafitech-backend
     env: node
     plan: free
-    buildCommand: npm install
+    rootDir: server
+    buildCommand: npm install --legacy-peer-deps
     startCommand: npm start
+    healthCheckPath: /health
     envVars:
       - key: NODE_ENV
         value: production
       - key: PORT
         value: 10000
+

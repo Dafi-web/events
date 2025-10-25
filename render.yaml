@@ -1,0 +1,32 @@
+services:
+  # Backend API Service
+  - type: web
+    name: dafitech-backend
+    env: node
+    plan: free
+    buildCommand: cd server && npm install --legacy-peer-deps
+    startCommand: cd server && npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      # Add your environment variables from server/.env here
+      # - key: MONGODB_URI
+      #   sync: false
+      # - key: JWT_SECRET
+      #   sync: false
+      # - key: CLOUDINARY_CLOUD_NAME
+      #   sync: false
+      # - key: CLOUDINARY_API_KEY
+      #   sync: false
+      # - key: CLOUDINARY_API_SECRET
+      #   sync: false
+      # - key: STRIPE_SECRET_KEY
+      #   sync: false
+      # - key: EMAIL_USER
+      #   sync: false
+      # - key: EMAIL_PASSWORD
+      #   sync: false
+

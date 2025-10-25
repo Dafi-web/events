@@ -36,3 +36,4 @@ connectionSchema.pre('save', function(next) {
 });
 
 module.exports = mongoose.model('Connection', connectionSchema);
+
