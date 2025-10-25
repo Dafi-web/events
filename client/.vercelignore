@@ -1,0 +1,14 @@
+# Ignore development files
+src/**/*.test.js
+src/**/*.test.jsx
+src/**/*.spec.js
+src/**/*.spec.jsx
+src/setupTests.js
+
+# Ignore documentation
+*.md
+!README.md
+
+# Ignore config files that might cause issues
+.eslintrc*
+.prettierrc*
