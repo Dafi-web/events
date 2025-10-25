@@ -613,7 +613,7 @@ const Home = () => {
             <div className="bg-white rounded-2xl shadow-xl p-8 text-center hover:shadow-2xl transition-shadow duration-300">
               <div className="w-32 h-32 mx-auto mb-6 rounded-full overflow-hidden shadow-lg">
                 <img 
-                  src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=300&h=300&q=80" 
+                  src="https://github.com/Dafi-web/assets2/blob/main/GHuicPpQYTezyvgYZJjlOSXuf0y%20(1).jpg?raw=true" 
                   alt="Dawit Abrha - Founder & CEO" 
                   className="w-full h-full object-cover"
                 />

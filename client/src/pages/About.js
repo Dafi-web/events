@@ -45,7 +45,7 @@ const About = () => {
       role: 'Founder & CEO',
       bio: 'M.Sc. in Electrical & Computer Engineering, MERN Full Stack Expert. University lecturer and entrepreneur passionate about technology and business growth. Founder of DafiTech with a vision to connect the Ethiopian diaspora through technology.',
       bioAmharic: 'በኤሌክትሪክ እና ኮምፒውተር ምህንድስና ውስጥ M.Sc.፣ MERN ፉል ስታክ ሙያዊ። የዩኒቨርሲቲ አስተማሪ እና ተገቢያ ሰው። የDafiTech መስራች።',
-      image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=300&h=300&q=80'
+      image: 'https://github.com/Dafi-web/assets2/blob/main/GHuicPpQYTezyvgYZJjlOSXuf0y%20(1).jpg?raw=true'
     },
     {
       name: 'Fikadu Shewit',
