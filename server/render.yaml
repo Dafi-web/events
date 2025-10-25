@@ -3,9 +3,9 @@ services:
     name: dafitech-backend
     env: node
     plan: free
-    rootDir: server
-    buildCommand: npm install --legacy-peer-deps && npm install
-    startCommand: npm start
+    rootDir: .
+    buildCommand: npm run render-build
+    startCommand: npm run render-start
     healthCheckPath: /health
     envVars:
       - key: NODE_ENV
