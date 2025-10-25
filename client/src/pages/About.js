@@ -43,15 +43,15 @@ const About = () => {
     {
       name: 'Dawit Abrha',
       role: 'Founder & CEO',
-      bio: 'M.Sc. in Electrical & Computer Engineering, MERN Full Stack Expert. University lecturer and entrepreneur passionate about technology and business growth.',
-      bioAmharic: 'በኤሌክትሪክ እና ኮምፒውተር ምህንድስና ውስጥ M.Sc.፣ MERN ፉል ስታክ ሙያዊ። የዩኒቨርሲቲ አስተማሪ እና ተገቢያ ሰው።',
+      bio: 'M.Sc. in Electrical & Computer Engineering, MERN Full Stack Expert. University lecturer and entrepreneur passionate about technology and business growth. Founder of DafiTech with a vision to connect the Ethiopian diaspora through technology.',
+      bioAmharic: 'በኤሌክትሪክ እና ኮምፒውተር ምህንድስና ውስጥ M.Sc.፣ MERN ፉል ስታክ ሙያዊ። የዩኒቨርሲቲ አስተማሪ እና ተገቢያ ሰው። የDafiTech መስራች።',
       image: '/api/placeholder/300/300'
     },
     {
       name: 'Fikadu Shewit',
-      role: 'Program Manager',
-      bio: 'M.A. in English Literature, University lecturer with expertise in program development and educational management.',
-      bioAmharic: 'በእንግሊዝኛ ስነ-ጽሁፍ M.A.፣ የዩኒቨርሲቲ አስተማሪ በፕሮግራም ልማት እና በትምህርት አያያዝ ሙያዊ።',
+      role: 'Program Manager & Telecommunications Engineer',
+      bio: 'M.A. in English Literature, Telecommunications Engineer with expertise in program development and educational management. University lecturer with a passion for connecting people through technology and education.',
+      bioAmharic: 'በእንግሊዝኛ ስነ-ጽሁፍ M.A.፣ የቴሌኮሙኒኬሽን ምህንድስና፣ የዩኒቨርሲቲ አስተማሪ በፕሮግራም ልማት እና በትምህርት አያያዝ ሙያዊ።',
       image: '/api/placeholder/300/300'
     }
   ];

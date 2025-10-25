@@ -596,6 +596,49 @@ const Home = () => {
         </div>
       </section>
 
+      {/* Team Section */}
+      <section className="py-24 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+              Meet Our <span className="text-blue-600">Team</span>
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              The passionate individuals behind DafiTech, dedicated to connecting and empowering our community.
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 max-w-4xl mx-auto">
+            {/* Dawit - Founder */}
+            <div className="bg-white rounded-2xl shadow-xl p-8 text-center hover:shadow-2xl transition-shadow duration-300">
+              <div className="w-32 h-32 mx-auto mb-6 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center">
+                <span className="text-4xl font-bold text-white">DA</span>
+              </div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-2">Dawit Abrha</h3>
+              <p className="text-blue-600 font-semibold mb-4">Founder & CEO</p>
+              <p className="text-gray-600 leading-relaxed">
+                M.Sc. in Electrical & Computer Engineering, MERN Full Stack Expert. 
+                University lecturer and entrepreneur passionate about technology and business growth. 
+                Founder of DafiTech with a vision to connect the Ethiopian diaspora through technology.
+              </p>
+            </div>
+            
+            {/* Fikadu - Program Manager */}
+            <div className="bg-white rounded-2xl shadow-xl p-8 text-center hover:shadow-2xl transition-shadow duration-300">
+              <div className="w-32 h-32 mx-auto mb-6 bg-gradient-to-br from-orange-500 to-orange-600 rounded-full flex items-center justify-center">
+                <span className="text-4xl font-bold text-white">FS</span>
+              </div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-2">Fikadu Shewit</h3>
+              <p className="text-orange-600 font-semibold mb-4">Program Manager & Telecommunications Engineer</p>
+              <p className="text-gray-600 leading-relaxed">
+                M.A. in English Literature, Telecommunications Engineer with expertise in program development 
+                and educational management. University lecturer with a passion for connecting people through technology and education.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Get Involved Section */}
       <section className="relative py-24 overflow-hidden">
         {/* Background Image */}
