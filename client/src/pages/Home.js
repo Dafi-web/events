@@ -631,8 +631,8 @@ const Home = () => {
               <h3 className="text-2xl font-bold text-gray-900 mb-2">Fikadu Shewit</h3>
               <p className="text-orange-600 font-semibold mb-4">Program Manager & Telecommunications Engineer</p>
               <p className="text-gray-600 leading-relaxed">
-                M.A. in English Literature, Telecommunications Engineer with expertise in program development 
-                and educational management. University lecturer with a passion for connecting people through technology and education.
+                Telecommunications Engineer with extensive experience in lecturing and advising student projects. 
+                University lecturer with expertise in program development and educational management, passionate about connecting people through technology and education.
               </p>
             </div>
           </div>

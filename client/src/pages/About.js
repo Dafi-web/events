@@ -50,8 +50,8 @@ const About = () => {
     {
       name: 'Fikadu Shewit',
       role: 'Program Manager & Telecommunications Engineer',
-      bio: 'M.A. in English Literature, Telecommunications Engineer with expertise in program development and educational management. University lecturer with a passion for connecting people through technology and education.',
-      bioAmharic: 'በእንግሊዝኛ ስነ-ጽሁፍ M.A.፣ የቴሌኮሙኒኬሽን ምህንድስና፣ የዩኒቨርሲቲ አስተማሪ በፕሮግራም ልማት እና በትምህርት አያያዝ ሙያዊ።',
+      bio: 'Telecommunications Engineer with extensive experience in lecturing and advising student projects. University lecturer with expertise in program development and educational management, passionate about connecting people through technology and education.',
+      bioAmharic: 'የቴሌኮሙኒኬሽን ምህንድስና፣ በማስተማር እና በተማሪ ፕሮጀክቶች ምክር ሰጪነት በርካታ ልምድ ያለው። የዩኒቨርሲቲ አስተማሪ በፕሮግራም ልማት እና በትምህርት አያያዝ ሙያዊ።',
       image: '/api/placeholder/300/300'
     }
   ];
