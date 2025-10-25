@@ -1,5 +1,5 @@
 {
-  "name": "onetigray",
+  "name": "dafitech",
   "version": "1.0.0",
   "description": "DafiTech.org - Connecting members around the world",
   "main": "server/index.js",
@@ -17,7 +17,7 @@
     "diaspora",
     "mern"
   ],
-  "author": "OneTigray Team",
+  "author": "DafiTech Team",
   "license": "MIT",
   "devDependencies": {
     "concurrently": "^8.2.2"

@@ -20,7 +20,7 @@ const Event = require('../models/Event');
 async function updateEventStatus() {
   try {
     // Connect to MongoDB
-    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/onetigray', {
+    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/dafitech', {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });

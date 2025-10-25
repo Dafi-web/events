@@ -50,7 +50,7 @@ const Login = () => {
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className="text-center">
           <Link to="/" className="text-3xl font-bold text-primary-600">
-            OneTigray
+            DafiTech
           </Link>
           <h2 className="mt-6 text-3xl font-bold text-gray-900">
             Sign in to your account

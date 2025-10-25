@@ -17,7 +17,7 @@ const storage = new CloudinaryStorage({
     const isVideo = file.mimetype.startsWith('video/');
     
     return {
-      folder: 'onetigray',
+      folder: 'dafitech',
       resource_type: isVideo ? 'video' : 'image',
       // For videos, use simpler settings to avoid processing timeouts
       ...(isVideo ? {

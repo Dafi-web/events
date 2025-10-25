@@ -17,7 +17,7 @@ const rl = readline.createInterface({
 const question = (query) => new Promise((resolve) => rl.question(query, resolve));
 
 async function setupCloudinary() {
-  console.log('🚀 OneTigray Cloudinary Setup\n');
+  console.log('🚀 DafiTech Cloudinary Setup\n');
   console.log('This script will help you configure Cloudinary for file uploads.\n');
   
   console.log('First, you need to:');
@@ -38,7 +38,7 @@ async function setupCloudinary() {
   const jwtSecret = require('crypto').randomBytes(64).toString('hex');
   
   const envContent = `# MongoDB Configuration
-MONGODB_URI=mongodb+srv://wediabrhana_db_user:yesno1212@cluster0.zdrbe3u.mongodb.net/onetigray?retryWrites=true&w=majority&appName=Cluster0&serverSelectionTimeoutMS=30000
+MONGODB_URI=mongodb+srv://wediabrhana_db_user:yesno1212@cluster0.zdrbe3u.mongodb.net/dafitech?retryWrites=true&w=majority&appName=Cluster0&serverSelectionTimeoutMS=30000
 
 # JWT Secret for authentication
 JWT_SECRET=${jwtSecret}

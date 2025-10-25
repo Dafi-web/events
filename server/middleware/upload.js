@@ -75,7 +75,7 @@ const uploadMedia = upload.fields([
 ]);
 
 // Helper function to upload files to Cloudinary
-const uploadToCloudinary = (fileBuffer, folder = 'onetigray/events', originalName = '') => {
+const uploadToCloudinary = (fileBuffer, folder = 'dafitech/events', originalName = '') => {
   return new Promise((resolve, reject) => {
     if (!process.env.CLOUDINARY_CLOUD_NAME) {
       // Return a placeholder URL if Cloudinary is not configured

@@ -9,7 +9,7 @@ const mongoose = require('mongoose');
 const Grid = require('gridfs-stream');
 
 // MongoDB connection
-const MONGODB_URI = 'mongodb+srv://wediabrhana_db_user:yesno1212@cluster0.zdrbe3u.mongodb.net/onetigray?retryWrites=true&w=majority&appName=Cluster0&serverSelectionTimeoutMS=30000';
+const MONGODB_URI = 'mongodb+srv://wediabrhana_db_user:yesno1212@cluster0.zdrbe3u.mongodb.net/dafitech?retryWrites=true&w=majority&appName=Cluster0&serverSelectionTimeoutMS=30000';
 
 async function testGridFS() {
   console.log('🔍 Testing MongoDB GridFS Setup...\n');

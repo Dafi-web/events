@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
 
 // Create GridFS storage engine
 const createGridFSStorage = () => {
-  const mongoUri = process.env.MONGODB_URI || 'mongodb+srv://wediabrhana_db_user:yesno1212@cluster0.zdrbe3u.mongodb.net/onetigray?retryWrites=true&w=majority&appName=Cluster0&serverSelectionTimeoutMS=30000';
+  const mongoUri = process.env.MONGODB_URI || 'mongodb+srv://wediabrhana_db_user:yesno1212@cluster0.zdrbe3u.mongodb.net/dafitech?retryWrites=true&w=majority&appName=Cluster0&serverSelectionTimeoutMS=30000';
   
   return new GridFsStorage({
     url: mongoUri,
