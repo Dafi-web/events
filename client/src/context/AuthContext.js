@@ -131,7 +131,7 @@ export const AuthProvider = ({ children }) => {
       
       // Handle network errors specifically
       if (error.code === 'NETWORK_ERROR' || error.message === 'Network Error' || !error.response) {
-        message = 'Cannot connect to server. Please try again later.';
+        message = 'Cannot connect to server. Please check your internet connection and try again.';
       } else if (error.response?.data) {
         if (error.response.data.msg) {
           message = error.response.data.msg;
