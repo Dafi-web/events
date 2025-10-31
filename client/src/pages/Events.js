@@ -6,6 +6,7 @@ import api from '../utils/api';
 import ImageGallery from '../components/ImageGallery';
 import ReactionButtons from '../components/ReactionButtons';
 import CommentSection from '../components/CommentSection';
+import countries from '../utils/countries';
 
 const Events = () => {
   const [events, setEvents] = useState([]);
@@ -24,11 +25,6 @@ const Events = () => {
 
   const categories = [
     'cultural', 'business', 'education', 'social', 'youth', 'religious'
-  ];
-
-  const countries = [
-    'United States', 'Canada', 'United Kingdom', 'Germany', 'Sweden', 'Norway',
-    'Australia', 'Ethiopia', 'Kenya', 'South Africa', 'UAE', 'Other'
   ];
 
   const fetchEvents = useCallback(async () => {

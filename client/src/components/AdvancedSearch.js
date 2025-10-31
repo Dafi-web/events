@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Search, Filter, X, MapPin, Calendar, Users, Building2, Star } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
+import countries from '../utils/countries';
 
 const AdvancedSearch = ({ onSearch, placeholder = "Search...", showFilters = true }) => {
   const { t } = useLanguage();
@@ -18,11 +19,6 @@ const AdvancedSearch = ({ onSearch, placeholder = "Search...", showFilters = tru
   const categories = [
     'restaurant', 'retail', 'services', 'healthcare', 
     'education', 'technology', 'finance', 'non-profit', 'other'
-  ];
-
-  const countries = [
-    'Ethiopia', 'United States', 'Canada', 'United Kingdom', 
-    'Germany', 'Netherlands', 'Australia', 'Sweden', 'Norway', 'Denmark'
   ];
 
   const types = ['business', 'professional', 'organization'];
@@ -212,4 +208,5 @@ const AdvancedSearch = ({ onSearch, placeholder = "Search...", showFilters = tru
 };
 
 export default AdvancedSearch;
+
 

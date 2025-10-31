@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Eye, EyeOff, Mail, Lock, User, MapPin, Briefcase } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import countries from '../utils/countries';
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -24,11 +25,6 @@ const Register = () => {
 
   const interestOptions = [
     'culture', 'youth', 'development', 'business', 'education', 'technology'
-  ];
-
-  const countries = [
-    'United States', 'Canada', 'United Kingdom', 'Germany', 'Sweden', 'Norway',
-    'Australia', 'Ethiopia', 'Kenya', 'South Africa', 'UAE', 'Other'
   ];
 
   const handleChange = (e) => {
