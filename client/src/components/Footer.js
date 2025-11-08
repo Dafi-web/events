@@ -113,12 +113,17 @@ const Footer = () => {
               </p>
               <div className="flex items-center space-x-2 text-gray-400 text-sm">
                 <span>Website by</span>
-                <a 
-                  href="mailto:contact@dafitech.org" 
-                  className="flex items-center space-x-1 hover:text-orange-400 transition-colors"
-                  title="Contact Dawit for web development services"
+                <a
+                  href="https://dev.dafitech.org"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center space-x-2 hover:text-orange-400 transition-colors"
+                  title="Visit Dawit Abrha's portfolio"
                 >
                   <DafiTechLogo size="h-4" showName={true} />
+                  <span className="font-semibold">Dawit Abrha</span>
+                  <span className="hidden sm:inline text-xs text-gray-500">(Founder)</span>
+                  <span className="hidden md:inline text-xs text-orange-300">dev.dafitech.org</span>
                 </a>
               </div>
             </div>
