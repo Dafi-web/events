@@ -8,6 +8,36 @@ import ReactionButtons from '../components/ReactionButtons';
 import CommentSection from '../components/CommentSection';
 import countries from '../utils/countries';
 
+const EXPIRATION_BUFFER_HOURS = 6;
+
+const getEventDateTime = (event) => {
+  if (!event?.date) return null;
+
+  const eventDateTime = new Date(event.date);
+  if (Number.isNaN(eventDateTime.getTime())) {
+    return null;
+  }
+
+  if (event.time) {
+    const [hourString = '0', minuteString = '0'] = event.time.split(':');
+    const hours = parseInt(hourString, 10);
+    const minutes = parseInt(minuteString, 10);
+
+    if (!Number.isNaN(hours)) {
+      eventDateTime.setHours(hours, !Number.isNaN(minutes) ? minutes : 0, 0, 0);
+    }
+  }
+
+  return eventDateTime;
+};
+
+const getEventExpirationTime = (event) => {
+  const startDateTime = getEventDateTime(event);
+  if (!startDateTime) return null;
+
+  return new Date(startDateTime.getTime() + EXPIRATION_BUFFER_HOURS * 60 * 60 * 1000);
+};
+
 const Events = () => {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -267,16 +297,30 @@ const Events = () => {
                         {/* Event Status Badge */}
                         {(() => {
                           const now = new Date();
-                          const eventDate = new Date(event.date);
-                          const isEventActive = event.isActive && eventDate >= now;
-                          
+                          const eventStart = getEventDateTime(event);
+                          const expirationTime = getEventExpirationTime(event);
+
+                          const hasValidDate = !!eventStart && !Number.isNaN(eventStart?.getTime?.());
+                          const isExpired = !event.isActive || (expirationTime ? expirationTime < now : hasValidDate && eventStart < now);
+                          const isUpcoming = hasValidDate ? eventStart > now : false;
+
+                          let statusLabel = '🟢 Active';
+                          let statusClasses = 'bg-green-100 text-green-800';
+
+                          if (isExpired) {
+                            statusLabel = '🔴 Expired';
+                            statusClasses = 'bg-red-100 text-red-800';
+                          } else if (isUpcoming) {
+                            statusLabel = '🟡 Upcoming';
+                            statusClasses = 'bg-yellow-100 text-yellow-800';
+                          } else {
+                            statusLabel = '🟢 Active';
+                            statusClasses = 'bg-green-100 text-green-800';
+                          }
+
                           return (
-                            <span className={`inline-block px-2 py-1 text-xs font-semibold rounded-full ${
-                              isEventActive 
-                                ? 'bg-green-100 text-green-800' 
-                                : 'bg-red-100 text-red-800'
-                            }`}>
-                              {isEventActive ? '🟢 Active' : '🔴 Expired'}
+                            <span className={`inline-block px-2 py-1 text-xs font-semibold rounded-full ${statusClasses}`}>
+                              {statusLabel}
                             </span>
                           );
                         })()}
@@ -370,9 +414,13 @@ const Events = () => {
                         
                         {(() => {
                           const now = new Date();
-                          const eventDate = new Date(event.date);
-                          const isEventActive = event.isActive && eventDate >= now;
-                          
+                          const eventStart = getEventDateTime(event);
+                          const expirationTime = getEventExpirationTime(event);
+
+                          const hasValidDate = !!eventStart && !Number.isNaN(eventStart?.getTime?.());
+                          const isExpired = !event.isActive || (expirationTime ? expirationTime < now : hasValidDate && eventStart < now);
+                          const isUpcoming = hasValidDate ? eventStart > now : false;
+
                           if (!isAuthenticated) {
                             return (
                               <div className="text-center py-2">
@@ -380,18 +428,29 @@ const Events = () => {
                               </div>
                             );
                           }
-                          
-                          if (!isEventActive) {
+
+                          if (isExpired) {
                             return (
                               <div className="text-center py-2">
                                 <p className="text-sm text-red-600 font-medium">
-                                  {eventDate < now ? 'Event has ended' : 'Event is no longer active'}
+                                  Event has ended
                                 </p>
                                 <p className="text-xs text-gray-500 mt-1">RSVP not available</p>
                               </div>
                             );
                           }
-                          
+
+                          if (!isUpcoming) {
+                            return (
+                              <div className="text-center py-2">
+                                <p className="text-sm text-amber-600 font-medium">
+                                  Event is in progress
+                                </p>
+                                <p className="text-xs text-gray-500 mt-1">RSVP closed during the event</p>
+                              </div>
+                            );
+                          }
+
                           return (
                             <div className="flex gap-2">
                               <button
