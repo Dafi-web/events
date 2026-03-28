@@ -2,17 +2,20 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import { 
-  User, Mail, Phone, MapPin, Calendar, Briefcase, 
-  GraduationCap, Globe, Edit, Save, X, Camera,
+  User, Globe, Edit, Save, X, Camera, Lock,
   Linkedin, Instagram, Twitter, Facebook, Youtube
 } from 'lucide-react';
 import api from '../utils/api';
+import { translateAuthMsg } from '../utils/authMsg';
 
 const Profile = () => {
   const { user, updateUser } = useAuth();
   const { t } = useLanguage();
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [pwd, setPwd] = useState({ current: '', new: '', confirm: '' });
+  const [pwdLoading, setPwdLoading] = useState(false);
+  const [pwdFeedback, setPwdFeedback] = useState({ type: '', text: '' });
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -107,6 +110,33 @@ const Profile = () => {
       alert('Failed to update profile. Please try again.');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handlePasswordChange = async (e) => {
+    e.preventDefault();
+    setPwdFeedback({ type: '', text: '' });
+    if (pwd.new.length < 6) {
+      setPwdFeedback({ type: 'err', text: t('errPasswordMin') });
+      return;
+    }
+    if (pwd.new !== pwd.confirm) {
+      setPwdFeedback({ type: 'err', text: t('passwordsMustMatch') });
+      return;
+    }
+    setPwdLoading(true);
+    try {
+      await api.put('/auth/change-password', {
+        currentPassword: pwd.current,
+        newPassword: pwd.new
+      });
+      setPwdFeedback({ type: 'ok', text: t('passwordChangedSuccess') });
+      setPwd({ current: '', new: '', confirm: '' });
+    } catch (err) {
+      const code = err.response?.data?.msg;
+      setPwdFeedback({ type: 'err', text: translateAuthMsg(code, t) });
+    } finally {
+      setPwdLoading(false);
     }
   };
 
@@ -213,6 +243,70 @@ const Profile = () => {
 
           {/* Content */}
           <div className="p-6">
+            <div className="mb-8 p-4 border border-gray-200 rounded-lg bg-gray-50">
+              <h2 className="text-lg font-semibold text-gray-900 border-b border-gray-200 pb-2 mb-3 flex items-center gap-2">
+                <Lock className="w-5 h-5 text-primary-600 shrink-0" />
+                {t('changePasswordTitle')}
+              </h2>
+              <p className="text-sm text-gray-600 mb-4">{t('changePasswordHint')}</p>
+              <form onSubmit={handlePasswordChange} className="space-y-3 max-w-md">
+                {pwdFeedback.text && (
+                  <div
+                    className={`text-sm px-3 py-2 rounded-md ${
+                      pwdFeedback.type === 'ok'
+                        ? 'bg-green-50 border border-green-200 text-green-800'
+                        : 'bg-red-50 border border-red-200 text-red-700'
+                    }`}
+                  >
+                    {pwdFeedback.text}
+                  </div>
+                )}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    {t('currentPassword')}
+                  </label>
+                  <input
+                    type="password"
+                    autoComplete="current-password"
+                    value={pwd.current}
+                    onChange={(e) => setPwd((p) => ({ ...p, current: e.target.value }))}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    {t('newPassword')}
+                  </label>
+                  <input
+                    type="password"
+                    autoComplete="new-password"
+                    value={pwd.new}
+                    onChange={(e) => setPwd((p) => ({ ...p, new: e.target.value }))}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    {t('confirmNewPassword')}
+                  </label>
+                  <input
+                    type="password"
+                    autoComplete="new-password"
+                    value={pwd.confirm}
+                    onChange={(e) => setPwd((p) => ({ ...p, confirm: e.target.value }))}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                  />
+                </div>
+                <button
+                  type="submit"
+                  disabled={pwdLoading}
+                  className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50 text-sm font-medium"
+                >
+                  {pwdLoading ? t('loading') : t('updatePassword')}
+                </button>
+              </form>
+            </div>
+
             <form onSubmit={handleSubmit}>
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Personal Information */}

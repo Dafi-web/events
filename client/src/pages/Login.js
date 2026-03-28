@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Eye, EyeOff, Mail, Lock } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 
 const Login = () => {
+  const { t } = useLanguage();
   const [formData, setFormData] = useState({
     email: '',
     password: ''
@@ -39,7 +41,7 @@ const Login = () => {
         setError(result.message);
       }
     } catch (error) {
-      setError('An unexpected error occurred. Please try again.');
+      setError(t('errServer'));
     } finally {
       setLoading(false);
     }
@@ -53,15 +55,15 @@ const Login = () => {
             DafiTech Super Academy
           </Link>
           <h2 className="mt-6 text-3xl font-bold text-gray-900">
-            Sign in to your account
+            {t('signInTitle')}
           </h2>
           <p className="mt-2 text-sm text-gray-600">
-            Or{' '}
+            {t('signInOr')}{' '}
             <Link
               to="/register"
               className="font-medium text-primary-600 hover:text-primary-500"
             >
-              create a new account
+              {t('createNewAccount')}
             </Link>
           </p>
         </div>
@@ -78,7 +80,7 @@ const Login = () => {
 
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                Email address
+                {t('email')}
               </label>
               <div className="mt-1 relative">
                 <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
@@ -91,14 +93,14 @@ const Login = () => {
                   value={formData.email}
                   onChange={handleChange}
                   className="appearance-none block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-primary-500 focus:border-primary-500"
-                  placeholder="Enter your email"
+                  placeholder={t('email')}
                 />
               </div>
             </div>
 
             <div>
               <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                Password
+                {t('password')}
               </label>
               <div className="mt-1 relative">
                 <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
@@ -111,7 +113,7 @@ const Login = () => {
                   value={formData.password}
                   onChange={handleChange}
                   className="appearance-none block w-full pl-10 pr-10 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-primary-500 focus:border-primary-500"
-                  placeholder="Enter your password"
+                  placeholder={t('password')}
                 />
                 <button
                   type="button"
@@ -136,14 +138,14 @@ const Login = () => {
                   className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
                 />
                 <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">
-                  Remember me
+                  {t('rememberMe')}
                 </label>
               </div>
 
               <div className="text-sm">
-                <a href="#" className="font-medium text-primary-600 hover:text-primary-500">
-                  Forgot your password?
-                </a>
+                <Link to="/forgot-password" className="font-medium text-primary-600 hover:text-primary-500">
+                  {t('forgotPassword')}
+                </Link>
               </div>
             </div>
 
@@ -153,7 +155,7 @@ const Login = () => {
                 disabled={loading}
                 className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {loading ? 'Signing in...' : 'Sign in'}
+                {loading ? t('signingIn') : t('login')}
               </button>
             </div>
           </form>

@@ -1,9 +1,9 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
-const mongoose = require('mongoose');
 const { body, validationResult } = require('express-validator');
 const User = require('../models/User');
 const { auth } = require('../middleware/auth');
+const { sendMail } = require('../utils/sendMail');
 
 const router = express.Router();
 
@@ -166,6 +166,155 @@ router.post('/login', [
     });
   }
 });
+
+// @route   POST /api/auth/forgot-password
+// @desc    Request password reset email (JWT link)
+// @access  Public
+router.post(
+  '/forgot-password',
+  [body('email').isEmail().normalizeEmail().withMessage('valid_email_required')],
+  async (req, res) => {
+    try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({ msg: errors.array()[0].msg });
+      }
+
+      const { email } = req.body;
+      const user = await User.findOne({ email });
+
+      const genericMsg =
+        'If an account exists for this email, you will receive password reset instructions shortly.';
+
+      if (!user) {
+        return res.json({ msg: genericMsg });
+      }
+
+      const resetToken = jwt.sign(
+        { id: user._id.toString(), purpose: 'password-reset' },
+        process.env.JWT_SECRET,
+        { expiresIn: '1h' }
+      );
+
+      const base =
+        process.env.FRONTEND_URL ||
+        process.env.CLIENT_URL ||
+        'http://localhost:3000';
+      const resetUrl = `${base.replace(/\/$/, '')}/reset-password?token=${encodeURIComponent(resetToken)}`;
+
+      const emailResult = await sendMail({
+        to: user.email,
+        subject: 'DafiTech Super Academy — Password reset',
+        text: `Hello ${user.name},\n\nWe received a request to reset your password.\n\nOpen this link (valid for 1 hour):\n${resetUrl}\n\nIf you did not request this, you can ignore this email.\n\n— DafiTech Super Academy`,
+        html: `<p>Hello ${escapeHtml(user.name)},</p>
+<p>We received a request to reset your password.</p>
+<p><a href="${resetUrl}">Reset your password</a> (link valid for 1 hour)</p>
+<p>If you did not request this, you can ignore this email.</p>
+<p>— DafiTech Super Academy</p>`
+      });
+
+      if (!emailResult.sent && process.env.NODE_ENV === 'development') {
+        console.log('[forgot-password] Dev — reset URL:', resetUrl);
+      }
+
+      return res.json({ msg: genericMsg });
+    } catch (error) {
+      console.error('Forgot password error:', error);
+      res.status(500).json({ msg: 'server_error' });
+    }
+  }
+);
+
+function escapeHtml(s) {
+  return String(s || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+// @route   POST /api/auth/reset-password
+// @desc    Set new password with token from email
+// @access  Public
+router.post(
+  '/reset-password',
+  [
+    body('token').notEmpty().withMessage('token_required'),
+    body('password').isLength({ min: 6 }).withMessage('password_min_6')
+  ],
+  async (req, res) => {
+    try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({ msg: errors.array()[0].msg });
+      }
+
+      const { token, password } = req.body;
+      let decoded;
+      try {
+        decoded = jwt.verify(token, process.env.JWT_SECRET);
+      } catch {
+        return res.status(400).json({ msg: 'invalid_or_expired_token' });
+      }
+
+      if (decoded.purpose !== 'password-reset' || !decoded.id) {
+        return res.status(400).json({ msg: 'invalid_or_expired_token' });
+      }
+
+      const user = await User.findById(decoded.id);
+      if (!user) {
+        return res.status(400).json({ msg: 'invalid_or_expired_token' });
+      }
+
+      user.password = password;
+      await user.save();
+
+      res.json({ msg: 'password_reset_success' });
+    } catch (error) {
+      console.error('Reset password error:', error);
+      res.status(500).json({ msg: 'server_error' });
+    }
+  }
+);
+
+// @route   PUT /api/auth/change-password
+// @desc    Change password while logged in (all roles including admin)
+// @access  Private
+router.put(
+  '/change-password',
+  auth,
+  [
+    body('currentPassword').notEmpty().withMessage('current_password_required'),
+    body('newPassword').isLength({ min: 6 }).withMessage('password_min_6')
+  ],
+  async (req, res) => {
+    try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({ msg: errors.array()[0].msg });
+      }
+
+      const { currentPassword, newPassword } = req.body;
+      const user = await User.findById(req.user.id);
+      if (!user) {
+        return res.status(404).json({ msg: 'user_not_found' });
+      }
+
+      const match = await user.comparePassword(currentPassword);
+      if (!match) {
+        return res.status(400).json({ msg: 'invalid_current_password' });
+      }
+
+      user.password = newPassword;
+      await user.save();
+
+      res.json({ msg: 'password_updated' });
+    } catch (error) {
+      console.error('Change password error:', error);
+      res.status(500).json({ msg: 'server_error' });
+    }
+  }
+);
 
 // @route   GET /api/auth/me
 // @desc    Get current user

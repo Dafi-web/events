@@ -98,7 +98,6 @@ const translations = {
     // Footer
     followUs: 'Follow Us',
     quickLinks: 'Quick Links',
-    contactInfo: 'Contact Information',
     allRightsReserved: 'All rights reserved',
     
     // Admin
@@ -112,7 +111,41 @@ const translations = {
     reject: 'Reject',
     pending: 'Pending',
     approved: 'Approved',
-    rejected: 'Rejected'
+    rejected: 'Rejected',
+
+    // Auth & password (international)
+    phone: 'Phone',
+    forgotPassword: 'Forgot password?',
+    forgotPasswordTitle: 'Reset your password',
+    forgotPasswordHint: 'Enter your account email. If it exists, we will send a reset link (check spam).',
+    sendResetLink: 'Send reset link',
+    emailSentGeneric: 'If an account exists for this email, you will receive password reset instructions shortly.',
+    resetPasswordTitle: 'Choose a new password',
+    resetPasswordHint: 'Enter a new password (at least 6 characters).',
+    newPassword: 'New password',
+    confirmNewPassword: 'Confirm new password',
+    saveNewPassword: 'Reset password',
+    backToLogin: 'Back to sign in',
+    changePasswordTitle: 'Change password',
+    changePasswordHint: 'Use your current password, then choose a new one. Works for all accounts including admins.',
+    currentPassword: 'Current password',
+    updatePassword: 'Update password',
+    passwordChangedSuccess: 'Your password was updated successfully.',
+    passwordResetSuccess: 'Your password was reset. You can sign in now.',
+    signInTitle: 'Sign in to your account',
+    signInOr: 'Or',
+    createNewAccount: 'create a new account',
+    rememberMe: 'Remember me',
+    signingIn: 'Signing in…',
+    errInvalidCurrentPassword: 'Current password is incorrect.',
+    errExpiredToken: 'This link is invalid or has expired. Request a new reset.',
+    errServer: 'Something went wrong. Please try again.',
+    errPasswordMin: 'Password must be at least 6 characters.',
+    passwordsMustMatch: 'Passwords must match.',
+    errValidEmail: 'Please enter a valid email address.',
+    errTokenRequired: 'Reset link is invalid. Open the link from your email.',
+    errCurrentPasswordRequired: 'Please enter your current password.',
+    password: 'Password'
   },
   
   am: {
@@ -202,7 +235,6 @@ const translations = {
     // Footer
     followUs: 'እንከተለን',
     quickLinks: 'ፈጣን አገናኞች',
-    contactInfo: 'የግንኙነት መረጃ',
     allRightsReserved: 'ሁሉም መብቶች የተጠበቁ ናቸው',
     
     // Admin
@@ -216,7 +248,103 @@ const translations = {
     reject: 'አትቀበል',
     pending: 'በመጠባበቅ ላይ',
     approved: 'ፀድቋል',
-    rejected: 'ተቀባይነት አላገኘም'
+    rejected: 'ተቀባይነት አላገኘም',
+
+    phone: 'ስልክ',
+    forgotPassword: 'የይለፍ ቃል ረሳሁ?',
+    forgotPasswordTitle: 'የይለፍ ቃል ዳግም ያስጀምሩ',
+    forgotPasswordHint: 'የመለያዎን ኢሜይል ያስገቡ። ካለ ዳግም ማስጀመሪያ አገናኝ እንላካለን።',
+    sendResetLink: 'አገናኝ ላክ',
+    emailSentGeneric: 'ለዚህ ኢሜይል መለያ ካለ፣ የይለፍ ቃል ማስጀመሪያ መመሪያዎችን እንላካለን።',
+    resetPasswordTitle: 'አዲስ የይለፍ ቃል ይምረጡ',
+    resetPasswordHint: 'ቢያንስ 6 ቁምፊ ላይታይ ያስገቡ።',
+    newPassword: 'አዲስ የይለፍ ቃል',
+    confirmNewPassword: 'አዲስ የይለፍ ቃል ያረጋግጡ',
+    saveNewPassword: 'የይለፍ ቃል ያስገቡ',
+    backToLogin: 'ወደ መግቢያ ተመለስ',
+    changePasswordTitle: 'የይለፍ ቃል ቀይር',
+    changePasswordHint: 'የአሁኑን የይለፍ ቃል ማስገባት፣ ከዚያ አዲስ ይምረጡ። ለአስተዳዳሪም ይሰራል።',
+    currentPassword: 'የአሁን የይለፍ ቃል',
+    updatePassword: 'የይለፍ ቃል አዘምን',
+    passwordChangedSuccess: 'የይለፍ ቃልዎ ተሻሽሏል።',
+    passwordResetSuccess: 'የይለፍ ቃልዎ ተቀይሯል። አሁን ይግቡ።',
+    signInTitle: 'ወደ መለያዎ ይግቡ',
+    signInOr: 'ወይም',
+    createNewAccount: 'አዲስ መለያ ይፍጠሩ',
+    rememberMe: 'አስታውሰኝ',
+    signingIn: 'በመግባት ላይ…',
+    errInvalidCurrentPassword: 'የአሁኑ የይለፍ ቃል ትክክል አይደለም።',
+    errExpiredToken: 'አገናኙ ልክ አይደለም ወይም ጊዜ አልፏል። እንደገና ይጠይቁ።',
+    errServer: 'ስህተት ተፈጥሯል። እንደገና ይሞክሩ።',
+    errPasswordMin: 'የይለፍ ቃል ቢያንስ 6 ቁምፊ ላይታይ ይሁን።',
+    passwordsMustMatch: 'የይለፍ ቃሎች አንድ ይሁኑ።',
+    errValidEmail: 'ትክክለኛ ኢሜይል ያስገቡ።',
+    errTokenRequired: 'የማስጀመሪያ አገናኝ ልክ አይደለም። ከኢሜይልዎ ይክፈቱ።',
+    errCurrentPasswordRequired: 'የአሁኑን የይለፍ ቃል ያስገቡ።',
+    password: 'የይለፍ ቃል'
+  },
+
+  fr: {
+    home: 'Accueil',
+    about: 'À propos',
+    courses: 'Cours',
+    news: 'Actualités',
+    directory: 'Annuaire',
+    tutorials: 'Tutoriels',
+    joinUs: 'Nous rejoindre',
+    contact: 'Contact',
+    login: 'Connexion',
+    register: 'Inscription',
+    logout: 'Déconnexion',
+    admin: 'Admin',
+    profile: 'Profil',
+    loading: 'Chargement…',
+    error: 'Erreur',
+    success: 'Succès',
+    save: 'Enregistrer',
+    cancel: 'Annuler',
+    delete: 'Supprimer',
+    edit: 'Modifier',
+    view: 'Voir',
+    search: 'Rechercher',
+    filter: 'Filtrer',
+    submit: 'Envoyer',
+    back: 'Retour',
+    next: 'Suivant',
+    previous: 'Précédent',
+    close: 'Fermer',
+    phone: 'Téléphone',
+    forgotPassword: 'Mot de passe oublié ?',
+    forgotPasswordTitle: 'Réinitialiser le mot de passe',
+    forgotPasswordHint: 'Saisissez l’e-mail du compte. Si un compte existe, nous enverrons un lien (vérifiez les spams).',
+    sendResetLink: 'Envoyer le lien',
+    emailSentGeneric: 'Si un compte existe pour cet e-mail, vous recevrez les instructions sous peu.',
+    resetPasswordTitle: 'Choisir un nouveau mot de passe',
+    resetPasswordHint: 'Au moins 6 caractères.',
+    newPassword: 'Nouveau mot de passe',
+    confirmNewPassword: 'Confirmer le mot de passe',
+    saveNewPassword: 'Réinitialiser',
+    backToLogin: 'Retour à la connexion',
+    changePasswordTitle: 'Changer le mot de passe',
+    changePasswordHint: 'Saisissez l’ancien mot de passe puis le nouveau. Valable pour tous les comptes, y compris les administrateurs.',
+    currentPassword: 'Mot de passe actuel',
+    updatePassword: 'Mettre à jour',
+    passwordChangedSuccess: 'Mot de passe mis à jour.',
+    passwordResetSuccess: 'Mot de passe réinitialisé. Vous pouvez vous connecter.',
+    signInTitle: 'Connexion à votre compte',
+    signInOr: 'Ou',
+    createNewAccount: 'créer un compte',
+    rememberMe: 'Se souvenir de moi',
+    signingIn: 'Connexion…',
+    errInvalidCurrentPassword: 'Mot de passe actuel incorrect.',
+    errExpiredToken: 'Lien invalide ou expiré. Demandez un nouveau lien.',
+    errServer: 'Une erreur s’est produite. Réessayez.',
+    errPasswordMin: 'Le mot de passe doit contenir au moins 6 caractères.',
+    passwordsMustMatch: 'Les mots de passe doivent correspondre.',
+    errValidEmail: 'Veuillez saisir une adresse e-mail valide.',
+    errTokenRequired: 'Lien invalide. Ouvrez le lien reçu par e-mail.',
+    errCurrentPasswordRequired: 'Saisissez votre mot de passe actuel.',
+    password: 'Mot de passe'
   }
 };
 
@@ -231,7 +359,7 @@ export const LanguageProvider = ({ children }) => {
   }, [language]);
 
   const t = (key) => {
-    return translations[language]?.[key] || key;
+    return translations[language]?.[key] ?? translations.en?.[key] ?? key;
   };
 
   const changeLanguage = (newLanguage) => {
@@ -244,7 +372,8 @@ export const LanguageProvider = ({ children }) => {
     t,
     availableLanguages: [
       { code: 'en', name: 'English', flag: '🇺🇸' },
-      { code: 'am', name: 'አማርኛ', flag: '🇪🇹' }
+      { code: 'am', name: 'አማርኛ', flag: '🇪🇹' },
+      { code: 'fr', name: 'Français', flag: '🇫🇷' }
     ]
   };
 
