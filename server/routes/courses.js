@@ -7,6 +7,22 @@ const router = express.Router();
 
 const CATEGORIES = ['stem', 'languages', 'arts', 'business', 'technology', 'general'];
 
+const PRACTICE_LANGS = new Set(['html', 'css', 'javascript', 'mixed']);
+
+function normalizePractice(pr) {
+  if (!pr || typeof pr !== 'object') return null;
+  const title = String(pr.title || '').trim();
+  if (!title) return null;
+  const lang = PRACTICE_LANGS.has(pr.language) ? pr.language : 'html';
+  return {
+    title,
+    instructions: String(pr.instructions || ''),
+    starterCode: String(pr.starterCode || ''),
+    solution: String(pr.solution || ''),
+    language: lang
+  };
+}
+
 function parsePages(body) {
   if (!body.pages) return [];
   try {
@@ -14,10 +30,16 @@ function parsePages(body) {
     if (!Array.isArray(raw)) return [];
     return raw
       .filter((p) => p && String(p.title || '').trim() && String(p.body || '').trim())
-      .map((p) => ({
-        title: String(p.title).trim(),
-        body: String(p.body)
-      }));
+      .map((p) => {
+        const practices = Array.isArray(p.practices)
+          ? p.practices.map(normalizePractice).filter(Boolean)
+          : [];
+        return {
+          title: String(p.title).trim(),
+          body: String(p.body),
+          practices
+        };
+      });
   } catch {
     return [];
   }

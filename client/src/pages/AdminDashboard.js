@@ -40,7 +40,7 @@ const AdminDashboard = () => {
     category: 'general',
     order: 0,
     isPublished: true,
-    pages: [{ title: '', body: '' }]
+    pages: [{ title: '', body: '', practices: [] }]
   });
   const [newNews, setNewNews] = useState({
     title: '',
@@ -90,7 +90,7 @@ const AdminDashboard = () => {
       category: 'general',
       order: 0,
       isPublished: true,
-      pages: [{ title: '', body: '' }]
+      pages: [{ title: '', body: '', practices: [] }]
     });
     setSelectedImages([]);
     setSelectedVideos([]);
@@ -101,9 +101,23 @@ const AdminDashboard = () => {
     e.preventDefault();
     setCourseError('');
 
-    const validPages = (newCourse.pages || []).filter(
-      (p) => p.title.trim() && p.body.trim()
-    );
+    const validPages = (newCourse.pages || [])
+      .filter((p) => p.title.trim() && p.body.trim())
+      .map((p) => ({
+        title: p.title.trim(),
+        body: p.body,
+        practices: (p.practices || [])
+          .filter((pr) => pr && String(pr.title || '').trim())
+          .map((pr) => ({
+            title: String(pr.title).trim(),
+            instructions: pr.instructions || '',
+            starterCode: pr.starterCode || '',
+            solution: pr.solution || '',
+            language: ['html', 'css', 'javascript', 'mixed'].includes(pr.language)
+              ? pr.language
+              : 'html'
+          }))
+      }));
     if (!newCourse.title.trim() || !newCourse.description.trim()) {
       setCourseError('Title and description are required.');
       return;
@@ -247,8 +261,18 @@ const AdminDashboard = () => {
       isPublished: course.isPublished !== false,
       pages:
         course.pages && course.pages.length
-          ? course.pages.map((p) => ({ title: p.title, body: p.body }))
-          : [{ title: '', body: '' }]
+          ? course.pages.map((p) => ({
+              title: p.title,
+              body: p.body,
+              practices: (p.practices || []).map((pr) => ({
+                title: pr.title || '',
+                instructions: pr.instructions || '',
+                starterCode: pr.starterCode || '',
+                solution: pr.solution || '',
+                language: pr.language || 'html'
+              }))
+            }))
+          : [{ title: '', body: '', practices: [] }]
     });
     setSelectedImages([]);
     setSelectedVideos([]);
@@ -265,8 +289,37 @@ const AdminDashboard = () => {
   const addCoursePage = () => {
     setNewCourse({
       ...newCourse,
-      pages: [...(newCourse.pages || []), { title: '', body: '' }]
+      pages: [...(newCourse.pages || []), { title: '', body: '', practices: [] }]
     });
+  };
+
+  const addPracticeToPage = (pageIdx) => {
+    const pages = [...(newCourse.pages || [])];
+    const practices = [...(pages[pageIdx].practices || [])];
+    practices.push({
+      title: '',
+      instructions: '',
+      starterCode: '',
+      solution: '',
+      language: 'html'
+    });
+    pages[pageIdx] = { ...pages[pageIdx], practices };
+    setNewCourse({ ...newCourse, pages });
+  };
+
+  const removePracticeFromPage = (pageIdx, prIdx) => {
+    const pages = [...(newCourse.pages || [])];
+    const practices = (pages[pageIdx].practices || []).filter((_, i) => i !== prIdx);
+    pages[pageIdx] = { ...pages[pageIdx], practices };
+    setNewCourse({ ...newCourse, pages });
+  };
+
+  const updatePracticeField = (pageIdx, prIdx, field, value) => {
+    const pages = [...(newCourse.pages || [])];
+    const practices = [...(pages[pageIdx].practices || [])];
+    practices[prIdx] = { ...practices[prIdx], [field]: value };
+    pages[pageIdx] = { ...pages[pageIdx], practices };
+    setNewCourse({ ...newCourse, pages });
   };
 
   const updateCoursePage = (index, field, value) => {
@@ -279,7 +332,7 @@ const AdminDashboard = () => {
     const pages = (newCourse.pages || []).filter((_, i) => i !== index);
     setNewCourse({
       ...newCourse,
-      pages: pages.length ? pages : [{ title: '', body: '' }]
+      pages: pages.length ? pages : [{ title: '', body: '', practices: [] }]
     });
   };
 
@@ -511,6 +564,83 @@ const AdminDashboard = () => {
                                   className="w-full px-3 py-2 border rounded-lg text-sm"
                                   rows={4}
                                 />
+                                <div className="pt-2 border-t border-gray-100 space-y-2">
+                                  <div className="flex justify-between items-center">
+                                    <span className="text-xs font-medium text-gray-600">Code practices</span>
+                                    <button
+                                      type="button"
+                                      onClick={() => addPracticeToPage(idx)}
+                                      className="text-xs text-primary-600 hover:text-primary-800"
+                                    >
+                                      + Add practice
+                                    </button>
+                                  </div>
+                                  {(page.practices || []).map((pr, pidx) => (
+                                    <div
+                                      key={pidx}
+                                      className="p-3 bg-gray-50 rounded-lg border border-gray-200 space-y-2"
+                                    >
+                                      <div className="flex justify-between items-center">
+                                        <span className="text-xs text-gray-500">Practice {pidx + 1}</span>
+                                        <button
+                                          type="button"
+                                          onClick={() => removePracticeFromPage(idx, pidx)}
+                                          className="text-xs text-red-600 hover:text-red-800"
+                                        >
+                                          Remove
+                                        </button>
+                                      </div>
+                                      <input
+                                        type="text"
+                                        placeholder="Practice title"
+                                        value={pr.title}
+                                        onChange={(e) =>
+                                          updatePracticeField(idx, pidx, 'title', e.target.value)
+                                        }
+                                        className="w-full px-2 py-1.5 border rounded text-xs"
+                                      />
+                                      <textarea
+                                        placeholder="Instructions for the learner"
+                                        value={pr.instructions}
+                                        onChange={(e) =>
+                                          updatePracticeField(idx, pidx, 'instructions', e.target.value)
+                                        }
+                                        className="w-full px-2 py-1.5 border rounded text-xs"
+                                        rows={2}
+                                      />
+                                      <select
+                                        value={pr.language || 'html'}
+                                        onChange={(e) =>
+                                          updatePracticeField(idx, pidx, 'language', e.target.value)
+                                        }
+                                        className="w-full px-2 py-1.5 border rounded text-xs"
+                                      >
+                                        <option value="html">html (full page in preview)</option>
+                                        <option value="mixed">mixed (HTML + inline JS/CSS)</option>
+                                        <option value="css">css (preview wraps your CSS)</option>
+                                        <option value="javascript">javascript (console output preview)</option>
+                                      </select>
+                                      <textarea
+                                        placeholder="Starter code"
+                                        value={pr.starterCode}
+                                        onChange={(e) =>
+                                          updatePracticeField(idx, pidx, 'starterCode', e.target.value)
+                                        }
+                                        className="w-full px-2 py-1.5 border rounded text-xs font-mono"
+                                        rows={4}
+                                      />
+                                      <textarea
+                                        placeholder="Solution (optional)"
+                                        value={pr.solution}
+                                        onChange={(e) =>
+                                          updatePracticeField(idx, pidx, 'solution', e.target.value)
+                                        }
+                                        className="w-full px-2 py-1.5 border rounded text-xs font-mono"
+                                        rows={3}
+                                      />
+                                    </div>
+                                  ))}
+                                </div>
                               </div>
                             ))}
                           </div>

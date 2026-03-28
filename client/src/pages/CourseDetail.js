@@ -13,6 +13,7 @@ import api from '../utils/api';
 import ReactionButtons from '../components/ReactionButtons';
 import CommentSection from '../components/CommentSection';
 import ImageGallery from '../components/ImageGallery';
+import CodePracticePanel from '../components/CodePracticePanel';
 
 const CATEGORY_LABELS = {
   stem: 'STEM',
@@ -84,6 +85,7 @@ const CourseDetail = () => {
     course.coverImage || (course.images && course.images[0]?.url) || null;
   const videos = course.videos || [];
   const pages = course.pages || [];
+  const practiceCount = pages.reduce((n, p) => n + (p.practices?.length || 0), 0);
   const images = course.images || [];
   const unpublished = !course.isPublished;
 
@@ -93,7 +95,16 @@ const CourseDetail = () => {
       ? [{ id: 'videos', label: `Videos (${videos.length})`, icon: PlayCircle }]
       : []),
     ...(pages.length
-      ? [{ id: 'readings', label: `Reading (${pages.length})`, icon: GraduationCap }]
+      ? [
+          {
+            id: 'readings',
+            label:
+              practiceCount > 0
+                ? `Lessons (${pages.length}) · ${practiceCount} practices`
+                : `Lessons (${pages.length})`,
+            icon: GraduationCap
+          }
+        ]
       : []),
     ...(images.length > 1 ? [{ id: 'gallery', label: 'Gallery', icon: BookOpen }] : []),
     { id: 'discussion', label: 'Discussion', icon: MessageCircle }
@@ -234,7 +245,10 @@ const CourseDetail = () => {
 
             {activeSection === 'readings' && pages.length > 0 && (
               <div className="space-y-8">
-                <h2 className="text-xl font-bold text-slate-900">Reading materials</h2>
+                <h2 className="text-xl font-bold text-slate-900">Lessons &amp; practice</h2>
+                <p className="text-slate-600 text-sm -mt-4">
+                  Read each topic, then use <strong>Run preview</strong> on code exercises. Reveal the solution when you are ready.
+                </p>
                 {pages.map((page, idx) => (
                   <article
                     key={idx}
@@ -250,6 +264,14 @@ const CourseDetail = () => {
                     <div className="text-slate-700 leading-relaxed whitespace-pre-wrap">
                       {page.body}
                     </div>
+                    {(page.practices || []).map((pr, pidx) => (
+                      <CodePracticePanel
+                        key={`${idx}-${pidx}`}
+                        practice={pr}
+                        pageIndex={idx}
+                        practiceIndex={pidx}
+                      />
+                    ))}
                   </article>
                 ))}
               </div>

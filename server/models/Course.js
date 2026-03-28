@@ -1,5 +1,29 @@
 const mongoose = require('mongoose');
 
+const practiceSchema = new mongoose.Schema(
+  {
+    title: { type: String, required: true, trim: true },
+    instructions: { type: String, default: '' },
+    starterCode: { type: String, default: '' },
+    solution: { type: String, default: '' },
+    language: {
+      type: String,
+      enum: ['html', 'css', 'javascript', 'mixed'],
+      default: 'html'
+    }
+  },
+  { _id: false }
+);
+
+const pageSchema = new mongoose.Schema(
+  {
+    title: { type: String, required: true, trim: true },
+    body: { type: String, required: true },
+    practices: { type: [practiceSchema], default: [] }
+  },
+  { _id: false }
+);
+
 const courseSchema = new mongoose.Schema({
   title: {
     type: String,
@@ -31,11 +55,8 @@ const courseSchema = new mongoose.Schema({
     caption: String,
     thumbnail: String
   }],
-  /** Structured lesson pages (text content) */
-  pages: [{
-    title: { type: String, required: true, trim: true },
-    body: { type: String, required: true }
-  }],
+  /** Structured lesson pages with optional hands-on practices */
+  pages: { type: [pageSchema], default: [] },
   category: {
     type: String,
     enum: ['stem', 'languages', 'arts', 'business', 'technology', 'general'],
