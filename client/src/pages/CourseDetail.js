@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useLocation } from 'react-router-dom';
 import {
   ArrowLeft,
   GraduationCap,
@@ -33,6 +33,7 @@ const CATEGORY_LABELS = {
 
 const CourseDetail = () => {
   const { id } = useParams();
+  const location = useLocation();
   const { user } = useAuth();
   const [course, setCourse] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -62,6 +63,12 @@ const CourseDetail = () => {
   useEffect(() => {
     setLessonIndex(0);
   }, [id]);
+
+  useEffect(() => {
+    if (location.hash === '#lessons' && !loading && (course?.pages?.length || 0) > 0) {
+      setActiveSection('readings');
+    }
+  }, [location.hash, loading, course?.pages?.length]);
 
   if (loading) {
     return (
@@ -104,10 +111,17 @@ const CourseDetail = () => {
   const images = course.images || [];
   const unpublished = !course.isPublished;
 
+  const showVideosNav = videos.length > 0 || pages.length > 0;
   const navItems = [
     { id: 'overview', label: 'Overview', icon: BookOpen },
-    ...(videos.length
-      ? [{ id: 'videos', label: `Videos (${videos.length})`, icon: PlayCircle }]
+    ...(showVideosNav
+      ? [
+          {
+            id: 'videos',
+            label: videos.length ? `Videos (${videos.length})` : 'Videos',
+            icon: PlayCircle
+          }
+        ]
       : []),
     ...(pages.length
       ? [
@@ -246,6 +260,31 @@ const CourseDetail = () => {
           <main className="lg:col-span-8 space-y-10">
             {activeSection === 'overview' && (
               <div className="space-y-8">
+                {pages.length > 0 && (
+                  <div className="rounded-2xl border-2 border-indigo-200/80 bg-gradient-to-br from-indigo-50 via-white to-violet-50 p-6 md:p-8 shadow-md shadow-indigo-100/80">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                      <div>
+                        <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2">
+                          <PlayCircle className="w-6 h-6 text-indigo-600 shrink-0" />
+                          Animated step-by-step lessons
+                        </h2>
+                        <p className="text-slate-600 text-sm mt-2 leading-relaxed max-w-xl">
+                          Open <strong>Lessons</strong> for the full-screen walkthrough (auto-advance scenes, play/pause,
+                          prev/next). This is built into the course — not YouTube. Optional uploaded files appear under{' '}
+                          <strong>Videos</strong> if the instructor added them.
+                        </p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setActiveSection('readings')}
+                        className="shrink-0 inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-500/30 hover:from-indigo-500 hover:to-violet-500 transition-all"
+                      >
+                        Open lessons
+                        <ChevronRight className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+                )}
                 <div className="rounded-2xl bg-white border border-slate-200 p-6 md:p-8 shadow-sm">
                   <h2 className="text-xl font-bold text-slate-900 mb-4">About this course</h2>
                   <div
@@ -301,32 +340,53 @@ const CourseDetail = () => {
               </div>
             )}
 
-            {activeSection === 'videos' && videos.length > 0 && (
+            {activeSection === 'videos' && showVideosNav && (
               <div className="space-y-8">
                 <h2 className="text-xl font-bold text-slate-900">Video lessons</h2>
-                {videos.map((v, idx) => (
-                  <div
-                    key={idx}
-                    className="rounded-2xl bg-white border border-slate-200 overflow-hidden shadow-sm"
-                  >
-                    <div className="aspect-video bg-black">
-                      <video
-                        src={v.url}
-                        controls
-                        className="w-full h-full"
-                        playsInline
-                        preload="metadata"
+                {videos.length === 0 ? (
+                  <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50/80 p-8 text-center space-y-3">
+                    <PlayCircle className="w-12 h-12 text-slate-400 mx-auto" />
+                    <p className="text-slate-700 font-medium">No uploaded video files for this course yet.</p>
+                    <p className="text-slate-600 text-sm max-w-lg mx-auto">
+                      The <strong>animated walkthrough</strong> (slide scenes with auto-advance) lives under{' '}
+                      <strong>Lessons</strong> — it does not require uploads here.
+                    </p>
+                    {pages.length > 0 && (
+                      <button
+                        type="button"
+                        onClick={() => setActiveSection('readings')}
+                        className="mt-2 inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-indigo-500"
                       >
-                        Your browser does not support video playback.
-                      </video>
-                    </div>
-                    {v.caption && (
-                      <div className="px-4 py-3 bg-slate-50 text-sm text-slate-600 border-t border-slate-100">
-                        {v.caption}
-                      </div>
+                        Go to Lessons
+                        <ChevronRight className="w-4 h-4" />
+                      </button>
                     )}
                   </div>
-                ))}
+                ) : (
+                  videos.map((v, idx) => (
+                    <div
+                      key={idx}
+                      className="rounded-2xl bg-white border border-slate-200 overflow-hidden shadow-sm"
+                    >
+                      <div className="aspect-video bg-black">
+                        <video
+                          src={v.url}
+                          controls
+                          className="w-full h-full"
+                          playsInline
+                          preload="metadata"
+                        >
+                          Your browser does not support video playback.
+                        </video>
+                      </div>
+                      {v.caption && (
+                        <div className="px-4 py-3 bg-slate-50 text-sm text-slate-600 border-t border-slate-100">
+                          {v.caption}
+                        </div>
+                      )}
+                    </div>
+                  ))
+                )}
               </div>
             )}
 
@@ -338,9 +398,8 @@ const CourseDetail = () => {
                       Step-by-step lessons
                     </h2>
                     <p className="text-slate-600 text-sm mt-1">
-                      One lesson per screen. Watch the <strong>animated walkthrough</strong> (play/pause
-                      auto-advance), then read the deep dive and notes, try code practice, and finish with the{' '}
-                      <strong>quick check</strong> when available.
+                      Each lesson starts with an <strong>animated walkthrough</strong> (gradient scenes, play/pause
+                      auto-advance, prev/next) when slides exist — then notes, practice, and optional quiz.
                     </p>
                   </div>
                   <div className="text-sm font-medium text-indigo-700 tabular-nums">
