@@ -6,7 +6,9 @@ import {
   BookOpen,
   PlayCircle,
   MessageCircle,
-  ChevronRight
+  ChevronRight,
+  ChevronLeft,
+  ListChecks
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import api from '../utils/api';
@@ -14,6 +16,7 @@ import ReactionButtons from '../components/ReactionButtons';
 import CommentSection from '../components/CommentSection';
 import ImageGallery from '../components/ImageGallery';
 import CodePracticePanel from '../components/CodePracticePanel';
+import VideoEmbed from '../components/VideoEmbed';
 
 const CATEGORY_LABELS = {
   stem: 'STEM',
@@ -33,6 +36,7 @@ const CourseDetail = () => {
   const [activeSection, setActiveSection] = useState('overview');
   const [galleryOpen, setGalleryOpen] = useState(false);
   const [galleryIndex, setGalleryIndex] = useState(0);
+  const [lessonIndex, setLessonIndex] = useState(0);
 
   const fetchCourse = useCallback(async () => {
     try {
@@ -50,6 +54,10 @@ const CourseDetail = () => {
   useEffect(() => {
     fetchCourse();
   }, [fetchCourse]);
+
+  useEffect(() => {
+    setLessonIndex(0);
+  }, [id]);
 
   if (loading) {
     return (
@@ -86,6 +94,9 @@ const CourseDetail = () => {
   const videos = course.videos || [];
   const pages = course.pages || [];
   const practiceCount = pages.reduce((n, p) => n + (p.practices?.length || 0), 0);
+  const lessonSafe = Math.min(Math.max(0, lessonIndex), Math.max(0, pages.length - 1));
+  const currentPage = pages.length > 0 ? pages[lessonSafe] : null;
+  const lessonProgress = pages.length ? ((lessonSafe + 1) / pages.length) * 100 : 0;
   const images = course.images || [];
   const unpublished = !course.isPublished;
 
@@ -191,6 +202,32 @@ const CourseDetail = () => {
                 })}
               </ul>
             </nav>
+            {activeSection === 'readings' && pages.length > 0 && (
+              <div className="rounded-2xl bg-white border border-slate-200 shadow-sm overflow-hidden">
+                <div className="px-4 py-3 bg-gradient-to-r from-indigo-600 to-violet-600 text-white flex items-center gap-2">
+                  <ListChecks className="w-4 h-4 shrink-0" />
+                  <span className="text-xs font-semibold uppercase tracking-wide">Lesson outline</span>
+                </div>
+                <ul className="max-h-[min(420px,50vh)] overflow-y-auto p-2 space-y-0.5">
+                  {pages.map((p, i) => (
+                    <li key={i}>
+                      <button
+                        type="button"
+                        onClick={() => setLessonIndex(i)}
+                        className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${
+                          lessonSafe === i
+                            ? 'bg-indigo-50 text-indigo-900 font-semibold ring-1 ring-indigo-200'
+                            : 'text-slate-700 hover:bg-slate-50'
+                        }`}
+                      >
+                        <span className="text-indigo-500 font-bold mr-2 tabular-nums">{i + 1}.</span>
+                        <span className="line-clamp-2">{p.title}</span>
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
             <div className="rounded-2xl bg-white border border-slate-200 p-4 shadow-sm">
               <ReactionButtons
                 contentType="course"
@@ -243,37 +280,111 @@ const CourseDetail = () => {
               </div>
             )}
 
-            {activeSection === 'readings' && pages.length > 0 && (
-              <div className="space-y-8">
-                <h2 className="text-xl font-bold text-slate-900">Lessons &amp; practice</h2>
-                <p className="text-slate-600 text-sm -mt-4">
-                  Read each topic, then use <strong>Run preview</strong> on code exercises. Reveal the solution when you are ready.
-                </p>
-                {pages.map((page, idx) => (
-                  <article
-                    key={idx}
-                    className="rounded-2xl bg-white border border-slate-200 p-6 md:p-8 shadow-sm scroll-mt-24"
-                    id={`page-${idx}`}
-                  >
-                    <h3 className="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
-                      <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-100 text-indigo-800 text-sm font-bold">
-                        {idx + 1}
+            {activeSection === 'readings' && pages.length > 0 && currentPage && (
+              <div className="space-y-6">
+                <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+                  <div>
+                    <h2 className="text-2xl font-bold text-slate-900 tracking-tight">
+                      Step-by-step lessons
+                    </h2>
+                    <p className="text-slate-600 text-sm mt-1">
+                      One lesson per page — use <strong>Next</strong> to continue. Watch the video, read the notes,
+                      then try the code practice.
+                    </p>
+                  </div>
+                  <div className="text-sm font-medium text-indigo-700 tabular-nums">
+                    Lesson {lessonSafe + 1} of {pages.length}
+                  </div>
+                </div>
+
+                <div className="h-2 rounded-full bg-slate-200 overflow-hidden">
+                  <div
+                    className="h-full rounded-full bg-gradient-to-r from-indigo-500 via-violet-500 to-fuchsia-500 transition-[width] duration-300 ease-out"
+                    style={{ width: `${lessonProgress}%` }}
+                  />
+                </div>
+
+                <article
+                  className="rounded-3xl border border-slate-200/80 bg-gradient-to-b from-white to-slate-50/90 shadow-xl shadow-slate-200/50 overflow-hidden ring-1 ring-slate-200/60"
+                  id={`page-${lessonSafe}`}
+                >
+                  <div className="relative px-6 md:px-10 pt-8 pb-6 bg-gradient-to-br from-indigo-600 via-violet-600 to-fuchsia-600 text-white">
+                    <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_30%_20%,white,transparent_50%)]" />
+                    <div className="relative flex flex-wrap items-start gap-3">
+                      <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-white/20 backdrop-blur text-lg font-bold ring-1 ring-white/30">
+                        {lessonSafe + 1}
                       </span>
-                      {page.title}
-                    </h3>
-                    <div className="text-slate-700 leading-relaxed whitespace-pre-wrap">
-                      {page.body}
+                      <div>
+                        <p className="text-xs font-semibold uppercase tracking-widest text-indigo-100/90 mb-1">
+                          Current lesson
+                        </p>
+                        <h3 className="text-xl md:text-2xl font-bold leading-snug">{currentPage.title}</h3>
+                      </div>
                     </div>
-                    {(page.practices || []).map((pr, pidx) => (
-                      <CodePracticePanel
-                        key={`${idx}-${pidx}`}
-                        practice={pr}
-                        pageIndex={idx}
-                        practiceIndex={pidx}
-                      />
-                    ))}
-                  </article>
-                ))}
+                  </div>
+
+                  <div className="p-6 md:p-10 space-y-8">
+                    {currentPage.videoUrl && (
+                      <section className="space-y-2">
+                        <h4 className="text-sm font-semibold text-slate-500 uppercase tracking-wide flex items-center gap-2">
+                          <PlayCircle className="w-4 h-4 text-indigo-700" />
+                          Video walkthrough
+                        </h4>
+                        <VideoEmbed
+                          url={currentPage.videoUrl}
+                          caption={currentPage.videoCaption}
+                          title={currentPage.title}
+                        />
+                      </section>
+                    )}
+
+                    <section className="space-y-3">
+                      <h4 className="text-sm font-semibold text-slate-500 uppercase tracking-wide">
+                        Notes &amp; examples
+                      </h4>
+                      <div className="prose prose-slate prose-p:leading-relaxed max-w-none text-slate-700 whitespace-pre-wrap rounded-2xl bg-white/80 border border-slate-100 px-5 py-6">
+                        {currentPage.body}
+                      </div>
+                    </section>
+
+                    {(currentPage.practices || []).length > 0 && (
+                      <section className="space-y-2">
+                        <h4 className="text-sm font-semibold text-slate-500 uppercase tracking-wide">
+                          Hands-on practice
+                        </h4>
+                        {(currentPage.practices || []).map((pr, pidx) => (
+                          <CodePracticePanel
+                            key={`${lessonSafe}-${pidx}`}
+                            practice={pr}
+                            pageIndex={lessonSafe}
+                            practiceIndex={pidx}
+                          />
+                        ))}
+                      </section>
+                    )}
+                  </div>
+
+                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 px-6 md:px-10 py-6 bg-slate-100/80 border-t border-slate-200">
+                    <button
+                      type="button"
+                      disabled={lessonSafe <= 0}
+                      onClick={() => setLessonIndex((i) => Math.max(0, i - 1))}
+                      className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white px-5 py-3 text-sm font-semibold text-slate-800 shadow-sm hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                    >
+                      <ChevronLeft className="w-4 h-4" />
+                      Previous lesson
+                    </button>
+                    <button
+                      type="button"
+                      disabled={lessonSafe >= pages.length - 1}
+                      onClick={() => setLessonIndex((i) => Math.min(pages.length - 1, i + 1))}
+                      className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-500/25 hover:from-indigo-500 hover:to-violet-500 disabled:opacity-40 disabled:cursor-not-allowed disabled:shadow-none transition-all"
+                    >
+                      Next lesson
+                      <ChevronRight className="w-4 h-4" />
+                    </button>
+                  </div>
+                </article>
               </div>
             )}
 

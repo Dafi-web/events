@@ -19,7 +19,10 @@ const pageSchema = new mongoose.Schema(
   {
     title: { type: String, required: true, trim: true },
     body: { type: String, required: true },
-    practices: { type: [practiceSchema], default: [] }
+    practices: { type: [practiceSchema], default: [] },
+    /** Optional embedded video per lesson (e.g. YouTube watch or embed URL) */
+    videoUrl: { type: String, default: '', trim: true },
+    videoCaption: { type: String, default: '', trim: true }
   },
   { _id: false }
 );

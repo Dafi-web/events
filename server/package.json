@@ -7,7 +7,8 @@
     "start": "node index.js",
     "dev": "nodemon index.js",
     "build": "npm install --legacy-peer-deps",
-    "seed:webdev": "node scripts/seedWebDevCourse.js"
+    "seed:webdev": "node scripts/seedWebDevCourse.js",
+    "seed:mern": "node scripts/seedMernCourse.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

@@ -37,7 +37,9 @@ function parsePages(body) {
         return {
           title: String(p.title).trim(),
           body: String(p.body),
-          practices
+          practices,
+          videoUrl: String(p.videoUrl || '').trim(),
+          videoCaption: String(p.videoCaption || '').trim()
         };
       });
   } catch {

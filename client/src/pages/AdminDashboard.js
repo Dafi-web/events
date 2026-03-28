@@ -40,7 +40,7 @@ const AdminDashboard = () => {
     category: 'general',
     order: 0,
     isPublished: true,
-    pages: [{ title: '', body: '', practices: [] }]
+    pages: [{ title: '', body: '', practices: [], videoUrl: '', videoCaption: '' }]
   });
   const [newNews, setNewNews] = useState({
     title: '',
@@ -90,7 +90,7 @@ const AdminDashboard = () => {
       category: 'general',
       order: 0,
       isPublished: true,
-      pages: [{ title: '', body: '', practices: [] }]
+      pages: [{ title: '', body: '', practices: [], videoUrl: '', videoCaption: '' }]
     });
     setSelectedImages([]);
     setSelectedVideos([]);
@@ -116,7 +116,9 @@ const AdminDashboard = () => {
             language: ['html', 'css', 'javascript', 'mixed'].includes(pr.language)
               ? pr.language
               : 'html'
-          }))
+          })),
+        videoUrl: (p.videoUrl || '').trim(),
+        videoCaption: (p.videoCaption || '').trim()
       }));
     if (!newCourse.title.trim() || !newCourse.description.trim()) {
       setCourseError('Title and description are required.');
@@ -270,9 +272,11 @@ const AdminDashboard = () => {
                 starterCode: pr.starterCode || '',
                 solution: pr.solution || '',
                 language: pr.language || 'html'
-              }))
+              })),
+              videoUrl: p.videoUrl || '',
+              videoCaption: p.videoCaption || ''
             }))
-          : [{ title: '', body: '', practices: [] }]
+          : [{ title: '', body: '', practices: [], videoUrl: '', videoCaption: '' }]
     });
     setSelectedImages([]);
     setSelectedVideos([]);
@@ -289,7 +293,10 @@ const AdminDashboard = () => {
   const addCoursePage = () => {
     setNewCourse({
       ...newCourse,
-      pages: [...(newCourse.pages || []), { title: '', body: '', practices: [] }]
+      pages: [
+        ...(newCourse.pages || []),
+        { title: '', body: '', practices: [], videoUrl: '', videoCaption: '' }
+      ]
     });
   };
 
@@ -332,7 +339,9 @@ const AdminDashboard = () => {
     const pages = (newCourse.pages || []).filter((_, i) => i !== index);
     setNewCourse({
       ...newCourse,
-      pages: pages.length ? pages : [{ title: '', body: '', practices: [] }]
+      pages: pages.length
+        ? pages
+        : [{ title: '', body: '', practices: [], videoUrl: '', videoCaption: '' }]
     });
   };
 
@@ -555,6 +564,20 @@ const AdminDashboard = () => {
                                   placeholder="Page title"
                                   value={page.title}
                                   onChange={(e) => updateCoursePage(idx, 'title', e.target.value)}
+                                  className="w-full px-3 py-2 border rounded-lg text-sm"
+                                />
+                                <input
+                                  type="url"
+                                  placeholder="Lesson video URL (YouTube watch or embed — optional)"
+                                  value={page.videoUrl || ''}
+                                  onChange={(e) => updateCoursePage(idx, 'videoUrl', e.target.value)}
+                                  className="w-full px-3 py-2 border rounded-lg text-sm"
+                                />
+                                <input
+                                  type="text"
+                                  placeholder="Video caption (optional)"
+                                  value={page.videoCaption || ''}
+                                  onChange={(e) => updateCoursePage(idx, 'videoCaption', e.target.value)}
                                   className="w-full px-3 py-2 border rounded-lg text-sm"
                                 />
                                 <textarea
