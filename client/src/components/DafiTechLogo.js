@@ -2,9 +2,9 @@ import React from 'react';
 
 const DafiTechLogo = ({ className = "", size = "h-8", showName = true, animated = true }) => {
   return (
-    <div className={`flex items-center space-x-2 ${className}`}>
+    <div className={`flex items-center gap-2 sm:gap-2.5 min-w-0 ${className}`}>
       {/* Logo Image */}
-      <div className={`${size} w-auto flex items-center ${animated ? 'animate-logo-bounce-rotate' : ''}`} style={animated ? { animationDuration: '2.5s' } : {}}>
+      <div className={`${size} w-auto shrink-0 flex items-center ${animated ? 'animate-logo-bounce-rotate' : ''}`} style={animated ? { animationDuration: '2.5s' } : {}}>
         <img 
           src="/logos/dafitech-logo.png" 
           alt="DafiTech Super Academy" 
@@ -30,28 +30,25 @@ const DafiTechLogo = ({ className = "", size = "h-8", showName = true, animated 
       {/* Name */}
       {showName && (
         <div
-          className={`flex flex-col leading-tight ${animated ? 'animate-fade-in-up' : ''}`}
+          className={`flex flex-col leading-none min-w-0 max-w-[11rem] sm:max-w-none ${animated ? 'animate-fade-in-up' : ''}`}
           style={animated ? { animationDelay: '0.5s' } : {}}
         >
-          <span className="inline-flex flex-wrap items-baseline gap-x-0.5">
+          <span className="flex items-baseline gap-0 flex-wrap">
             <span
-              className={`text-blue-800 font-bold text-xs sm:text-sm ${animated ? 'animate-color-shift hover:text-blue-600 transition-colors duration-300' : ''}`}
+              className={`text-blue-800 font-bold text-sm sm:text-base ${animated ? 'animate-color-shift hover:text-blue-600 transition-colors duration-300' : ''}`}
               style={animated ? { animationDelay: '1s' } : {}}
             >
               Dafi
             </span>
             <span
-              className={`text-orange-500 font-bold text-xs sm:text-sm ${animated ? 'animate-color-shift-orange hover:text-orange-400 transition-colors duration-300' : ''}`}
+              className={`text-orange-500 font-bold text-sm sm:text-base ${animated ? 'animate-color-shift-orange hover:text-orange-400 transition-colors duration-300' : ''}`}
               style={animated ? { animationDelay: '1.1s' } : {}}
             >
               Tech
             </span>
-            <span
-              className={`text-slate-700 font-bold text-xs sm:text-sm tracking-tight ${animated ? '' : ''}`}
-            >
-              {' '}
-              Super Academy
-            </span>
+          </span>
+          <span className="text-slate-700 font-semibold text-[10px] sm:text-xs tracking-tight mt-0.5 leading-tight">
+            Super Academy
           </span>
         </div>
       )}

@@ -38,16 +38,11 @@ const Navbar = () => {
   return (
     <nav className="bg-white shadow-lg sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16">
-          <div className="flex items-center space-x-4">
-            <Link to="/" className="flex-shrink-0 flex items-center space-x-3">
-              <DafiTechLogo size="h-8" showName={true} animated={true} />
+        <div className="flex justify-between items-center min-h-[4rem] py-2 md:min-h-[4.5rem] md:py-0">
+          <div className="flex items-center min-w-0 flex-1 pr-2">
+            <Link to="/" className="shrink-0 min-w-0 flex items-center max-w-[min(100%,20rem)]">
+              <DafiTechLogo size="h-8 md:h-9" showName={true} animated={true} />
             </Link>
-            <div className="hidden sm:block">
-              <span className="text-sm text-gray-600">
-                Business • Courses • Learning
-              </span>
-            </div>
           </div>
 
           {/* Desktop Navigation */}
