@@ -29,7 +29,7 @@ const Footer = () => {
           {/* Brand Section */}
           <div className="lg:col-span-1">
             <Link to="/" className="flex items-center mb-4">
-              <span className="text-2xl font-bold text-primary-400">DafiTech</span>
+              <span className="text-xl sm:text-2xl font-bold text-primary-400">DafiTech Super Academy</span>
             </Link>
             <p className="text-gray-300 mb-6">
               Connecting members around the world — celebrating culture, unity, and progress.
@@ -109,7 +109,7 @@ const Footer = () => {
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-4">
               <p className="text-gray-400 text-sm">
-                © {currentYear} DafiTech. All rights reserved.
+                © {currentYear} DafiTech Super Academy. All rights reserved.
               </p>
               <div className="flex items-center space-x-2 text-gray-400 text-sm">
                 <span>Website by</span>

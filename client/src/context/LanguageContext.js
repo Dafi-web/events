@@ -45,7 +45,7 @@ const translations = {
     close: 'Close',
     
     // Home Page
-    welcomeTitle: 'Welcome to DafiTech',
+    welcomeTitle: 'Welcome to DafiTech Super Academy',
     welcomeSubtitle: 'Connecting professionals worldwide through business, online courses, and learning',
     upcomingEvents: 'Upcoming Events',
     latestNews: 'Latest News',
@@ -149,7 +149,7 @@ const translations = {
     close: 'ዝጋ',
     
     // Home Page
-    welcomeTitle: 'ወደ DafiTech እንኳን ደህና መጡ',
+    welcomeTitle: 'ወደ DafiTech Super Academy እንኳን ደህና መጡ',
     welcomeSubtitle: 'በንግድ፣ በመስመር ላይ ኮርሶች እና በትምህርት በኩል ባለሙያዎችን በዓለም አቀፍ ደረጃ በማገናኘት',
     upcomingEvents: 'የሚመጡ መርሃ ግብሮች',
     latestNews: 'የቅርብ ጊዜ ዜና',

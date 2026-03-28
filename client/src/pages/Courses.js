@@ -51,7 +51,7 @@ const Courses = () => {
             <div>
               <div className="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-1.5 text-sm text-indigo-100 ring-1 ring-white/20 mb-6">
                 <GraduationCap className="w-4 h-4" />
-                DafiTech Online School
+                DafiTech Super Academy
               </div>
               <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4">
                 Learn at your own pace
