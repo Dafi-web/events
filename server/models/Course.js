@@ -15,12 +15,34 @@ const practiceSchema = new mongoose.Schema(
   { _id: false }
 );
 
+const slideSchema = new mongoose.Schema(
+  {
+    title: { type: String, required: true, trim: true },
+    body: { type: String, default: '' },
+    variant: {
+      type: String,
+      enum: ['intro', 'content', 'practice', 'summary'],
+      default: 'content'
+    },
+    theme: {
+      type: String,
+      enum: ['indigo', 'emerald', 'amber', 'rose', 'slate', 'violet'],
+      default: 'indigo'
+    },
+    /** Optional mini exercise on this slide (same shape as lesson practices) */
+    practice: { type: practiceSchema, required: false }
+  },
+  { _id: false }
+);
+
 const pageSchema = new mongoose.Schema(
   {
     title: { type: String, required: true, trim: true },
     body: { type: String, required: true },
     practices: { type: [practiceSchema], default: [] },
-    /** Optional embedded video per lesson (e.g. YouTube watch or embed URL) */
+    /** In-app step-by-step presentation (replaces external video when present) */
+    slides: { type: [slideSchema], default: [] },
+    /** Optional embedded video per lesson (used only if slides are empty) */
     videoUrl: { type: String, default: '', trim: true },
     videoCaption: { type: String, default: '', trim: true }
   },

@@ -23,6 +23,22 @@ function normalizePractice(pr) {
   };
 }
 
+const SLIDE_VARIANTS = new Set(['intro', 'content', 'practice', 'summary']);
+const SLIDE_THEMES = new Set(['indigo', 'emerald', 'amber', 'rose', 'slate', 'violet']);
+
+function normalizeSlide(s) {
+  if (!s || typeof s !== 'object') return null;
+  const title = String(s.title || '').trim();
+  if (!title) return null;
+  const variant = SLIDE_VARIANTS.has(s.variant) ? s.variant : 'content';
+  const theme = SLIDE_THEMES.has(s.theme) ? s.theme : 'indigo';
+  const body = String(s.body || '');
+  const practice = s.practice ? normalizePractice(s.practice) : null;
+  const out = { title, body, variant, theme };
+  if (practice) out.practice = practice;
+  return out;
+}
+
 function parsePages(body) {
   if (!body.pages) return [];
   try {
@@ -34,10 +50,14 @@ function parsePages(body) {
         const practices = Array.isArray(p.practices)
           ? p.practices.map(normalizePractice).filter(Boolean)
           : [];
+        const slides = Array.isArray(p.slides)
+          ? p.slides.map(normalizeSlide).filter(Boolean)
+          : [];
         return {
           title: String(p.title).trim(),
           body: String(p.body),
           practices,
+          slides,
           videoUrl: String(p.videoUrl || '').trim(),
           videoCaption: String(p.videoCaption || '').trim()
         };

@@ -40,7 +40,9 @@ const AdminDashboard = () => {
     category: 'general',
     order: 0,
     isPublished: true,
-    pages: [{ title: '', body: '', practices: [], videoUrl: '', videoCaption: '' }]
+    pages: [
+      { title: '', body: '', practices: [], slides: [], videoUrl: '', videoCaption: '' }
+    ]
   });
   const [newNews, setNewNews] = useState({
     title: '',
@@ -90,7 +92,9 @@ const AdminDashboard = () => {
       category: 'general',
       order: 0,
       isPublished: true,
-      pages: [{ title: '', body: '', practices: [], videoUrl: '', videoCaption: '' }]
+      pages: [
+        { title: '', body: '', practices: [], slides: [], videoUrl: '', videoCaption: '' }
+      ]
     });
     setSelectedImages([]);
     setSelectedVideos([]);
@@ -118,7 +122,34 @@ const AdminDashboard = () => {
               : 'html'
           })),
         videoUrl: (p.videoUrl || '').trim(),
-        videoCaption: (p.videoCaption || '').trim()
+        videoCaption: (p.videoCaption || '').trim(),
+        slides: (p.slides || [])
+          .filter((s) => s && String(s.title || '').trim())
+          .map((s) => {
+            const slide = {
+              title: String(s.title).trim(),
+              body: s.body || '',
+              variant: ['intro', 'content', 'practice', 'summary'].includes(s.variant)
+                ? s.variant
+                : 'content',
+              theme: ['indigo', 'emerald', 'amber', 'rose', 'slate', 'violet'].includes(s.theme)
+                ? s.theme
+                : 'indigo'
+            };
+            const pr = s.practice;
+            if (pr && String(pr.title || '').trim()) {
+              slide.practice = {
+                title: String(pr.title).trim(),
+                instructions: pr.instructions || '',
+                starterCode: pr.starterCode || '',
+                solution: pr.solution || '',
+                language: ['html', 'css', 'javascript', 'mixed'].includes(pr.language)
+                  ? pr.language
+                  : 'html'
+              };
+            }
+            return slide;
+          })
       }));
     if (!newCourse.title.trim() || !newCourse.description.trim()) {
       setCourseError('Title and description are required.');
@@ -274,9 +305,33 @@ const AdminDashboard = () => {
                 language: pr.language || 'html'
               })),
               videoUrl: p.videoUrl || '',
-              videoCaption: p.videoCaption || ''
+              videoCaption: p.videoCaption || '',
+              slides: (p.slides || []).map((s) => ({
+                title: s.title || '',
+                body: s.body || '',
+                variant: s.variant || 'content',
+                theme: s.theme || 'indigo',
+                practice: s.practice
+                  ? {
+                      title: s.practice.title || '',
+                      instructions: s.practice.instructions || '',
+                      starterCode: s.practice.starterCode || '',
+                      solution: s.practice.solution || '',
+                      language: s.practice.language || 'html'
+                    }
+                  : undefined
+              }))
             }))
-          : [{ title: '', body: '', practices: [], videoUrl: '', videoCaption: '' }]
+          : [
+              {
+                title: '',
+                body: '',
+                practices: [],
+                slides: [],
+                videoUrl: '',
+                videoCaption: ''
+              }
+            ]
     });
     setSelectedImages([]);
     setSelectedVideos([]);
@@ -295,9 +350,37 @@ const AdminDashboard = () => {
       ...newCourse,
       pages: [
         ...(newCourse.pages || []),
-        { title: '', body: '', practices: [], videoUrl: '', videoCaption: '' }
+        { title: '', body: '', practices: [], slides: [], videoUrl: '', videoCaption: '' }
       ]
     });
+  };
+
+  const addSlideToPage = (pageIdx) => {
+    const pages = [...(newCourse.pages || [])];
+    const slides = [...(pages[pageIdx].slides || [])];
+    slides.push({
+      title: '',
+      body: '',
+      variant: 'content',
+      theme: 'indigo'
+    });
+    pages[pageIdx] = { ...pages[pageIdx], slides };
+    setNewCourse({ ...newCourse, pages });
+  };
+
+  const removeSlideFromPage = (pageIdx, sIdx) => {
+    const pages = [...(newCourse.pages || [])];
+    const slides = (pages[pageIdx].slides || []).filter((_, i) => i !== sIdx);
+    pages[pageIdx] = { ...pages[pageIdx], slides };
+    setNewCourse({ ...newCourse, pages });
+  };
+
+  const updateSlideField = (pageIdx, sIdx, field, value) => {
+    const pages = [...(newCourse.pages || [])];
+    const slides = [...(pages[pageIdx].slides || [])];
+    slides[sIdx] = { ...slides[sIdx], [field]: value };
+    pages[pageIdx] = { ...pages[pageIdx], slides };
+    setNewCourse({ ...newCourse, pages });
   };
 
   const addPracticeToPage = (pageIdx) => {
@@ -341,7 +424,16 @@ const AdminDashboard = () => {
       ...newCourse,
       pages: pages.length
         ? pages
-        : [{ title: '', body: '', practices: [], videoUrl: '', videoCaption: '' }]
+        : [
+            {
+              title: '',
+              body: '',
+              practices: [],
+              slides: [],
+              videoUrl: '',
+              videoCaption: ''
+            }
+          ]
     });
   };
 
@@ -566,9 +658,86 @@ const AdminDashboard = () => {
                                   onChange={(e) => updateCoursePage(idx, 'title', e.target.value)}
                                   className="w-full px-3 py-2 border rounded-lg text-sm"
                                 />
+                                <div className="pt-2 border-t border-gray-100 space-y-2">
+                                  <div className="flex justify-between items-center">
+                                    <span className="text-xs font-medium text-gray-600">
+                                      Presentation slides (in-app, no YouTube required)
+                                    </span>
+                                    <button
+                                      type="button"
+                                      onClick={() => addSlideToPage(idx)}
+                                      className="text-xs text-primary-600 hover:text-primary-800"
+                                    >
+                                      + Add slide
+                                    </button>
+                                  </div>
+                                  {(page.slides || []).map((sl, sidx) => (
+                                    <div
+                                      key={sidx}
+                                      className="p-3 bg-indigo-50/50 rounded-lg border border-indigo-100 space-y-2"
+                                    >
+                                      <div className="flex justify-between items-center">
+                                        <span className="text-xs text-gray-500">Slide {sidx + 1}</span>
+                                        <button
+                                          type="button"
+                                          onClick={() => removeSlideFromPage(idx, sidx)}
+                                          className="text-xs text-red-600 hover:text-red-800"
+                                        >
+                                          Remove
+                                        </button>
+                                      </div>
+                                      <input
+                                        type="text"
+                                        placeholder="Slide title"
+                                        value={sl.title}
+                                        onChange={(e) =>
+                                          updateSlideField(idx, sidx, 'title', e.target.value)
+                                        }
+                                        className="w-full px-2 py-1.5 border rounded text-xs"
+                                      />
+                                      <textarea
+                                        placeholder="Slide body (what learners read on this step)"
+                                        value={sl.body}
+                                        onChange={(e) =>
+                                          updateSlideField(idx, sidx, 'body', e.target.value)
+                                        }
+                                        className="w-full px-2 py-1.5 border rounded text-xs"
+                                        rows={3}
+                                      />
+                                      <div className="grid grid-cols-2 gap-2">
+                                        <select
+                                          value={sl.variant || 'content'}
+                                          onChange={(e) =>
+                                            updateSlideField(idx, sidx, 'variant', e.target.value)
+                                          }
+                                          className="px-2 py-1.5 border rounded text-xs"
+                                        >
+                                          <option value="intro">intro</option>
+                                          <option value="content">content</option>
+                                          <option value="practice">practice</option>
+                                          <option value="summary">summary</option>
+                                        </select>
+                                        <select
+                                          value={sl.theme || 'indigo'}
+                                          onChange={(e) =>
+                                            updateSlideField(idx, sidx, 'theme', e.target.value)
+                                          }
+                                          className="px-2 py-1.5 border rounded text-xs"
+                                        >
+                                          <option value="indigo">theme: indigo</option>
+                                          <option value="emerald">theme: emerald</option>
+                                          <option value="amber">theme: amber</option>
+                                          <option value="rose">theme: rose</option>
+                                          <option value="slate">theme: slate</option>
+                                          <option value="violet">theme: violet</option>
+                                        </select>
+                                      </div>
+                                    </div>
+                                  ))}
+                                </div>
                                 <input
                                   type="url"
-                                  placeholder="Lesson video URL (YouTube watch or embed — optional)"
+                                  placeholder="Optional external video URL (only if no slides)"
                                   value={page.videoUrl || ''}
                                   onChange={(e) => updateCoursePage(idx, 'videoUrl', e.target.value)}
                                   className="w-full px-3 py-2 border rounded-lg text-sm"

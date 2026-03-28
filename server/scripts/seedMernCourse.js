@@ -23,9 +23,21 @@ async function run() {
     process.exit(1);
   }
 
-  const existing = await Course.findOne({ title: mern.title });
+  const legacyTitle = 'MERN Stack — Step by Step with Videos & Examples';
+  const existing = await Course.findOne({
+    $or: [{ title: mern.title }, { title: legacyTitle }]
+  });
+
   if (existing) {
-    console.log('MERN course already exists:', existing._id.toString());
+    existing.title = mern.title;
+    existing.summary = mern.summary;
+    existing.description = mern.description;
+    existing.category = mern.category;
+    existing.order = mern.order;
+    existing.isPublished = mern.isPublished;
+    existing.pages = mern.pages;
+    await existing.save();
+    console.log('Updated MERN course:', existing._id.toString());
     await mongoose.disconnect();
     process.exit(0);
   }

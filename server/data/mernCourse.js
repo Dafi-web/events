@@ -1,30 +1,23 @@
 /**
- * MERN stack (MongoDB, Express, React, Node) — step-by-step with video + practice.
- * Video IDs reference popular free tutorials (YouTube embeds). Replace URLs anytime in Admin.
+ * MERN stack — built-in slide presentations (no external video required).
+ * Each lesson: slides[] = step-by-step “video-like” story + body notes + practices.
  */
 
+function S(title, body, variant = 'content', theme = 'indigo') {
+  return { title, body, variant, theme };
+}
+
 module.exports = {
-  title: 'MERN Stack — Step by Step with Videos & Examples',
+  title: 'MERN Stack — Step by Step with Presentations & Practice',
   summary:
-    'Build full-stack apps with Node, Express, MongoDB, and React. One lesson per step: video, notes, and code practice.',
-  description: `This course walks you through the MERN stack in clear steps. Each lesson opens on its own page — use **Next lesson** to move forward.
+    'Node, Express, MongoDB, React — lesson-by-lesson animated-style slides, notes, and hands-on code in your browser.',
+  description: `Learn the MERN stack without relying on YouTube. Each lesson opens with a **full-screen slide presentation** you step through (like a narrated deck): concepts first, then detailed notes below, then optional code exercises.
 
-**What you will learn**
-- Run JavaScript on the server with Node.js and npm
-- Build REST APIs with Express (routes, middleware, JSON)
-- Store data with MongoDB and Mongoose
-- Secure APIs with JWT and protect routes
-- Build UIs with React (components, hooks, router)
-- Connect React to your API with fetch or axios
-- See how everything fits together in a MERN workflow
+**MERN** = MongoDB, Express, React, Node.js — a common pattern for full-stack JavaScript apps.
 
-**How to use this course**
-1. Open **Lessons** in the course menu.
-2. Watch the embedded video for that step.
-3. Read the notes and try the **Hands-on practice** when provided.
-4. Click **Next lesson** — content is not dumped on one long page.
+Use **Next lesson** between topics. Use **Next slide** inside the presentation. Arrow keys ← → work on slides.
 
-Prerequisites: basic HTML/CSS/JS (our Web Development course is a good prep).`,
+Prerequisites: comfort with HTML/CSS/JS. Pair with our *Web Development* course if needed.`,
 
   category: 'technology',
   order: 1,
@@ -33,63 +26,76 @@ Prerequisites: basic HTML/CSS/JS (our Web Development course is a good prep).`,
   pages: [
     {
       title: '1. What is MERN? Roadmap & setup',
-      videoUrl: 'https://www.youtube.com/embed/7CqJlxBYj_A',
-      videoCaption:
-        'Big-picture overview of MongoDB, Express, React, and Node — how they work together in a typical app.',
-      body: `Step 1 — orientation
+      slides: [
+        S(
+          'Welcome to the MERN path',
+          'You will move in small steps: one lesson per screen, several slides per lesson. No external video — the slides are your guided walkthrough.',
+          'intro',
+          'violet'
+        ),
+        S(
+          'The four letters',
+          'M = MongoDB (database)\nE = Express (HTTP API on Node)\nR = React (user interface)\nN = Node.js (runs JavaScript on the server)',
+          'content',
+          'indigo'
+        ),
+        S(
+          'How a request travels',
+          '1) User uses your React app in the browser.\n2) React calls your API over HTTP (JSON).\n3) Express handles routes and talks to MongoDB via Mongoose.\n4) Node runs the server process.',
+          'content',
+          'emerald'
+        ),
+        S(
+          'Before lesson 2',
+          'Install Node.js LTS (nodejs.org). Verify: node -v and npm -v in a terminal. Install VS Code (or your editor) and Git. Optional: create a free MongoDB Atlas account for later.',
+          'summary',
+          'amber'
+        )
+      ],
+      body: `Reference notes — MERN orientation
 
-**MERN** stands for:
-- **M**ongoDB — document database
-- **E**xpress — web framework for Node.js
-- **R**eact — UI library
-- **N**ode.js — JavaScript runtime on the server
+**Tools**: Node includes npm. **Atlas** gives a hosted MongoDB URL. **.env** files store secrets locally (never commit real secrets).
 
-**Typical flow**
-1. User interacts with a **React** app in the browser.
-2. React calls your **Express** API (HTTP/JSON).
-3. Express talks to **MongoDB** through **Mongoose**.
-4. **Node.js** runs Express and your server code.
-
-**Install before next lessons**
-- **Node.js LTS** from nodejs.org (includes npm)
-- A code editor (VS Code recommended)
-- **MongoDB Atlas** free cluster (or local MongoDB) for later modules
-- **Git** for version control
-
-**Checklist**
-- [ ] node -v and npm -v work in a terminal
-- [ ] You can create a folder and open it in your editor`,
+**Next**: Node modules and npm scripts.`,
       practices: []
     },
     {
       title: '2. Node.js & npm — modules & scripts',
-      videoUrl: 'https://www.youtube.com/embed/fBNz5xF-Kx4',
-      videoCaption:
-        'Traversy Media — Node.js crash course: modules, filesystem, basics of running JS on the server.',
-      body: `Step 2 — Node fundamentals
+      slides: [
+        S(
+          'JavaScript off the browser',
+          'Node runs JS on servers and laptops. npm installs libraries (express, mongoose, …) into node_modules/.',
+          'intro',
+          'emerald'
+        ),
+        S(
+          'package.json',
+          'Lists project name, scripts ("start", "dev"), and dependencies. package-lock.json pins exact versions for reproducible installs.',
+          'content',
+          'slate'
+        ),
+        S(
+          'Try this flow',
+          'mkdir demo && cd demo\nnpm init -y\nnpm install express\n→ You now have node_modules and a lockfile.',
+          'practice',
+          'amber'
+        ),
+        S(
+          'You are ready',
+          'When npm install finishes without errors, you can require() packages and run scripts with npm run …',
+          'summary',
+          'indigo'
+        )
+      ],
+      body: `Notes — Node & npm
 
-**npm** is the package manager: \`npm init\`, \`npm install <package>\`, \`npm run <script>\`.
-
-**Common patterns**
-- \`require()\` / \`import\` to load modules
-- \`package.json\` lists dependencies and scripts
-- \`node file.js\` runs a file
-
-**Try in a terminal**
-\`\`\`
-mkdir demo && cd demo
-npm init -y
-npm install express
-\`\`\`
-
-Your \`node_modules\` folder holds installed packages; \`package-lock.json\` locks versions.`,
+Use \`require\` or ES modules. One entry file (e.g. index.js) often boots the server.`,
       practices: [
         {
-          title: 'Create a tiny script',
-          instructions:
-            'Write a script that prints "Hello MERN" using console.log. (In the box, write only the JavaScript lines you would put in index.js.)',
+          title: 'Console warm-up',
+          instructions: 'Print a line so you know Node runs: log "Hello MERN".',
           language: 'javascript',
-          starterCode: `// index.js — print a welcome line for your MERN journey
+          starterCode: `// Simulate what you put in index.js
 
 `,
           solution: `console.log("Hello MERN");`
@@ -98,269 +104,323 @@ Your \`node_modules\` folder holds installed packages; \`package-lock.json\` loc
     },
     {
       title: '3. Express — server, routes & JSON',
-      videoUrl: 'https://www.youtube.com/embed/SccSCAaYOCw',
-      videoCaption:
-        'Express.js crash course: creating a server, defining routes, and sending JSON responses.',
-      body: `Step 3 — your first API
+      slides: [
+        S(
+          'Express in one sentence',
+          'Express maps URLs to functions: when a GET hits /api/items, your handler runs and sends JSON back.',
+          'intro',
+          'indigo'
+        ),
+        S(
+          'Minimal pattern',
+          'const app = express();\napp.use(express.json());\napp.get("/api/health", (req,res) => res.json({ok:true}));\napp.listen(5000);',
+          'content',
+          'violet'
+        ),
+        S(
+          'Middleware',
+          'Functions that run before your route: parse JSON bodies, attach auth user, log requests. Order matters.',
+          'content',
+          'emerald'
+        ),
+        S(
+          'Test with a client',
+          'Use Thunder Client, Postman, or fetch() from a tiny HTML file to hit your routes while you learn.',
+          'summary',
+          'rose'
+        )
+      ],
+      body: `Notes — Express
 
-**Express** maps URLs to handler functions.
-
-**Core ideas**
-- \`app.get('/path', (req, res) => ...)\`
-- \`res.json({ ok: true })\` sends JSON
-- \`req.params\` and \`req.query\` for URL data
-
-**Middleware** runs before your route (parsing JSON body, logging, auth).
-
-**Minimal server sketch**
-\`\`\`js
-const express = require('express');
-const app = express();
-app.use(express.json());
-app.get('/api/health', (req, res) => res.json({ status: 'ok' }));
-app.listen(5000, () => console.log('Listening on 5000'));
-\`\`\`
-
-Use **Postman**, **Thunder Client**, or **fetch** in the browser to hit your routes.`,
+**req** has query, params, body; **res** has .json(), .status(), .send().`,
       practices: [
         {
-          title: 'API path helper',
-          instructions:
-            'Complete the function so it returns "/api/users/" plus the id (Express routes use strings like this). Run preview to test.',
+          title: 'Path helper',
+          instructions: 'Return "/api/users/" + id as a string.',
           language: 'javascript',
           starterCode: `function userPath(id) {
 
 }
-
-console.log(userPath("42"));
+console.log(userPath("7"));
 `,
           solution: `function userPath(id) {
   return "/api/users/" + id;
 }
-
-console.log(userPath("42"));`
+console.log(userPath("7"));`
         }
       ]
     },
     {
-      title: '4. REST, status codes & error handling',
-      videoUrl: 'https://www.youtube.com/embed/SccSCAaYOCw',
-      videoCaption:
-        'Same Express course — focus this watch on REST verbs, status codes (200, 201, 400, 404), and consistent JSON errors.',
-      body: `Step 4 — design your API
+      title: '4. REST, status codes & errors',
+      slides: [
+        S(
+          'Design predictable APIs',
+          'Use nouns for resources (/users, /posts). Map HTTP verbs to actions. Return consistent JSON for both success and errors.',
+          'intro',
+          'slate'
+        ),
+        S(
+          'Status codes you will use daily',
+          '200 OK · 201 Created · 400 Bad input · 401 Not authenticated · 403 Forbidden · 404 Missing · 500 Server bug',
+          'content',
+          'amber'
+        ),
+        S(
+          'Error JSON',
+          'Example: { "msg": "Email already taken" } with status 400 — helps the React app show a clear message.',
+          'content',
+          'indigo'
+        ),
+        S(
+          'Async routes',
+          'Use async/await with try/catch. On failure, call next(err) or send 500 with a safe message (hide stack traces in production).',
+          'summary',
+          'violet'
+        )
+      ],
+      body: `Notes — REST & errors
 
-**REST-ish conventions**
-- GET /items — list
-- GET /items/:id — one item
-- POST /items — create
-- PUT/PATCH /items/:id — update
-- DELETE /items/:id — remove
-
-**HTTP status codes**
-- 200 OK, 201 Created
-- 400 Bad Request (validation)
-- 401 Unauthorized, 403 Forbidden
-- 404 Not Found
-- 500 Internal Server Error
-
-**Good habits**
-- Always send JSON with a clear shape for errors: \`{ "msg": "..." }\`
-- Validate input before touching the database
-- Use async/await with try/catch in route handlers`,
+Validate early; never trust the client alone.`,
       practices: []
     },
     {
       title: '5. MongoDB & Mongoose — models & CRUD',
-      videoUrl: 'https://www.youtube.com/embed/WDrU305J1H0',
-      videoCaption:
-        'Mongoose tutorial: schemas, models, create/read/update/delete against MongoDB.',
-      body: `Step 5 — persistence
+      slides: [
+        S(
+          'Documents, not rows',
+          'MongoDB stores JSON-like documents. Mongoose adds schemas, validation, and a friendly API.',
+          'intro',
+          'emerald'
+        ),
+        S(
+          'Connect once',
+          'await mongoose.connect(MONGODB_URI) on startup. Reuse one connection for the whole app.',
+          'content',
+          'indigo'
+        ),
+        S(
+          'Model = collection',
+          'const User = mongoose.model("User", userSchema)\n→ users collection. Use create, find, findById, findOneAndUpdate, etc.',
+          'content',
+          'violet'
+        ),
+        S(
+          'Indexes & uniqueness',
+          'Mark email unique in the schema for data integrity. Add indexes for fields you query often.',
+          'summary',
+          'rose'
+        )
+      ],
+      body: `Notes — Mongoose
 
-**MongoDB** stores BSON documents in collections.
-
-**Mongoose** gives you schemas and a nice API:
-- \`mongoose.connect(uri)\`
-- Define a \`Schema\` and \`model\`
-- Use \`Model.create()\`, \`find()\`, \`findById()\`, \`findByIdAndUpdate()\`, \`findByIdAndDelete()\`
-
-**Example shape**
-\`\`\`js
-const userSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  email: { type: String, required: true, unique: true }
-});
-const User = mongoose.model('User', userSchema);
-\`\`\`
-
-**Atlas tip** — whitelist your IP (or 0.0.0.0/0 for dev only) and use the SRV connection string in \`.env\`.`,
+Atlas: whitelist IP, use SRV string in .env.`,
       practices: [
         {
-          title: 'Document shape (like MongoDB)',
-          instructions:
-            'Build a post object with title, body, and createdAt as an ISO date string. Log JSON.stringify of the object.',
+          title: 'Document shape',
+          instructions: 'Add createdAt ISO string to the object and log JSON.stringify.',
           language: 'javascript',
-          starterCode: `const post = {
-  title: "MERN lesson",
-  body: "Hello",
-  
-};
+          starterCode: `const doc = { title: "Post", body: "Hi" };
 
-console.log(JSON.stringify(post));
+console.log(JSON.stringify(doc));
 `,
-          solution: `const post = {
-  title: "MERN lesson",
-  body: "Hello",
+          solution: `const doc = {
+  title: "Post",
+  body: "Hi",
   createdAt: new Date().toISOString()
 };
 
-console.log(JSON.stringify(post));`
+console.log(JSON.stringify(doc));`
         }
       ]
     },
     {
       title: '6. Authentication — JWT & protected routes',
-      videoUrl: 'https://www.youtube.com/embed/mbsmsi7l3r4',
-      videoCaption:
-        'JWT authentication with Node — tokens, signing, middleware to protect Express routes.',
-      body: `Step 6 — auth basics
+      slides: [
+        S(
+          'Who is calling?',
+          'After login, the client sends a token. The server verifies it and attaches req.user for private routes.',
+          'intro',
+          'violet'
+        ),
+        S(
+          'Passwords',
+          'Store bcrypt hashes only. Compare on login. Never log passwords.',
+          'content',
+          'rose'
+        ),
+        S(
+          'JWT payload',
+          'Keep payloads small (user id, role). Sign with a strong JWT_SECRET. Short expiry + refresh strategy for production apps.',
+          'content',
+          'slate'
+        ),
+        S(
+          'Authorization header',
+          'Browser sends: Authorization: Bearer <token>. Middleware strips "Bearer " and verifies.',
+          'summary',
+          'indigo'
+        )
+      ],
+      body: `Notes — JWT
 
-**JWT** (JSON Web Token) — signed payload the client sends on each request (often in \`Authorization: Bearer <token>\`).
-
-**Flow**
-1. User logs in with email/password
-2. Server verifies password (hashed with bcrypt)
-3. Server returns a JWT
-4. Client stores token (memory, httpOnly cookie, or localStorage — tradeoffs apply)
-5. Middleware validates JWT before private routes
-
-**Never** store plain-text passwords. **Always** hash with bcrypt.
-
-**Middleware pattern**
-\`\`\`js
-function auth(req, res, next) {
-  const token = req.header('Authorization')?.replace('Bearer ', '');
-  if (!token) return res.status(401).json({ msg: 'No token' });
-  try {
-    req.user = jwt.verify(token, process.env.JWT_SECRET);
-    next();
-  } catch {
-    res.status(401).json({ msg: 'Invalid token' });
-  }
-}
-\`\`\``,
+Use https in production. Consider httpOnly cookies vs localStorage tradeoffs.`,
       practices: []
     },
     {
-      title: '7. React — components, JSX & props',
-      videoUrl: 'https://www.youtube.com/embed/pKd0Rpw7O48',
-      videoCaption:
-        'React JS crash course — components, JSX, props, and modern function components.',
-      body: `Step 7 — UI layer
+      title: '7. React — components & JSX',
+      slides: [
+        S(
+          'UI as components',
+          'Split screens into reusable pieces. Props go in; events and state update what people see.',
+          'intro',
+          'indigo'
+        ),
+        S(
+          'JSX rules',
+          'className not class. One parent wrapper (or Fragment). {expression} for JavaScript inside markup.',
+          'content',
+          'violet'
+        ),
+        S(
+          'Tooling',
+          'Vite or CRA bundles JSX to plain JS. Fast refresh updates the page as you save files.',
+          'content',
+          'emerald'
+        ),
+        S(
+          'Compose',
+          'Build <Header />, <Main />, <Footer /> and nest data with props — same idea as MERN apps in production.',
+          'summary',
+          'amber'
+        )
+      ],
+      body: `Notes — React
 
-**React** builds interfaces from components.
-
-**JSX** looks like HTML in JavaScript; use \`className\` not \`class\`.
-
-**Props** pass data down: \`<Card title="Hi" />\`
-
-**Create React App** or **Vite** (\`npm create vite@latest\`) scaffolds a frontend project that talks to your API.
-
-**One-way data flow** — state lifts up when siblings need to share data.`,
+Think in one-way data flow: top-level state flows down; callbacks flow up.`,
       practices: [
         {
-          title: 'Small helper for your API',
-          instructions:
-            'Complete the function so it returns the sum of two numbers (you will use similar pure functions in route handlers).',
+          title: 'Pure helper',
+          instructions: 'Implement sum(a,b) and log sum(2,3).',
           language: 'javascript',
           starterCode: `function sum(a, b) {
 
 }
-
 console.log(sum(2, 3));
 `,
           solution: `function sum(a, b) {
   return a + b;
 }
-
 console.log(sum(2, 3));`
         }
       ]
     },
     {
       title: '8. Hooks — useState & useEffect',
-      videoUrl: 'https://www.youtube.com/embed/pKd0Rpw7O48',
-      videoCaption:
-        'Same React course — focus on useState for local state and useEffect for side effects (e.g. fetching data).',
-      body: `Step 8 — interactivity
+      slides: [
+        S(
+          'State that re-renders',
+          'useState returns [value, setValue]. Calling setValue updates the UI.',
+          'intro',
+          'emerald'
+        ),
+        S(
+          'Side effects',
+          'useEffect runs after paint. Dependency array [] = run once on mount; [id] = when id changes.',
+          'content',
+          'indigo'
+        ),
+        S(
+          'Data loading',
+          'fetch in useEffect, then setState with results. Show loading and error UI — networks fail!',
+          'content',
+          'violet'
+        ),
+        S(
+          'Cleanup',
+          'Return a function from useEffect to unsubscribe timers or abort fetch when the component unmounts.',
+          'summary',
+          'rose'
+        )
+      ],
+      body: `Notes — Hooks
 
-**useState** — component state that triggers re-render when updated.
-
-**useEffect** — run code after render; dependency array controls when it re-runs:
-- \`[]\` — once on mount
-- \`[id]\` — when \`id\` changes
-- no array — every render (usually avoid)
-
-**Fetching in React**
-\`\`\`js
-useEffect(() => {
-  fetch('/api/items')
-    .then((r) => r.json())
-    .then(setItems);
-}, []);
-\`\`\``,
+Avoid infinite loops: include all referenced values in the dependency array or use a stable callback pattern.`,
       practices: []
     },
     {
-      title: '9. React Router — pages & navigation',
-      videoUrl: 'https://www.youtube.com/embed/pKd0Rpw7O48',
-      videoCaption:
-        'Use the React crash course above; add React Router (npm i react-router-dom) and follow v6 docs for Routes, Route, Link, and useParams.',
-      body: `Step 9 — SPA navigation
+      title: '9. React Router — SPA navigation',
+      slides: [
+        S(
+          'URLs without full reloads',
+          'React Router maps paths to components: /login, /dashboard/:id — feels like many pages, one bundle.',
+          'intro',
+          'violet'
+        ),
+        S(
+          'Core pieces',
+          'BrowserRouter → Routes → Route path element. Link navigates; useNavigate for code navigation.',
+          'content',
+          'indigo'
+        ),
+        S(
+          'Params & loaders',
+          'useParams() reads :id from the URL. Keep API base URL in env for different dev/prod hosts.',
+          'content',
+          'emerald'
+        ),
+        S(
+          'Protect routes',
+          'Wrap routes that need auth: if no token, redirect to /login.',
+          'summary',
+          'amber'
+        )
+      ],
+      body: `Notes — Router v6
 
-**React Router** maps URLs to components so the app feels like multiple pages without full reloads.
-
-**Basics**
-- \`<BrowserRouter>\` wraps the app
-- \`<Routes>\` / \`<Route path="..." element={...} />\`
-- \`<Link to="...">\` for navigation
-
-**Params** — \`/user/:id\` with \`useParams()\`.
-
-Keep API base URL in an env variable (e.g. Vite: \`import.meta.env.VITE_API_URL\`).`,
+Match route order from most specific to general.`,
       practices: []
     },
     {
       title: '10. Calling your API from React',
-      videoUrl: 'https://www.youtube.com/embed/pKd0Rpw7O48',
-      videoCaption:
-        'Tie it together — forms, fetch/axios, loading and error UI patterns.',
-      body: `Step 10 — full-stack wiring
+      slides: [
+        S(
+          'Same stack, two ports',
+          'Dev: React on 5173, API on 5000. Configure CORS on Express for your dev origin.',
+          'intro',
+          'indigo'
+        ),
+        S(
+          'fetch POST',
+          'method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data)',
+          'content',
+          'emerald'
+        ),
+        S(
+          'Attach JWT',
+          'headers: { Authorization: `Bearer ${token}` } for private endpoints.',
+          'content',
+          'violet'
+        ),
+        S(
+          'Handle responses',
+          'Check res.ok. Parse JSON errors and show them in the UI — users need feedback.',
+          'summary',
+          'rose'
+        )
+      ],
+      body: `Notes — client ↔ API
 
-**From React**
-- \`fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) })\`
-- Attach JWT: \`headers: { Authorization: \`Bearer \${token}\` }\`
-
-**CORS** — your Express app must allow your frontend origin (\`cors\` package: \`app.use(cors({ origin: 'http://localhost:5173' }))\`).
-
-**UX**
-- Show loading spinners while awaiting network
-- Surface error messages from \`res.json()\`
-
-**Env split**
-- Server: \`PORT\`, \`MONGODB_URI\`, \`JWT_SECRET\`
-- Client: public API URL only — never put secrets in React code`,
+Never put API secrets in React source — they are visible to anyone.`,
       practices: [
         {
-          title: 'JSON body for POST',
-          instructions:
-            'Complete the options object: method POST, headers with Content-Type application/json, body JSON.stringify of { name: "Ada" }. (Network calls may fail in this preview — check the console structure.)',
+          title: 'Stringify body',
+          instructions: 'Set body to JSON.stringify({ name: "Ada" }) in the options object.',
           language: 'javascript',
           starterCode: `const options = {
   method: "POST",
   headers: { "Content-Type": "application/json" },
   body: 
 };
-
 console.log(options.body);
 `,
           solution: `const options = {
@@ -368,60 +428,74 @@ console.log(options.body);
   headers: { "Content-Type": "application/json" },
   body: JSON.stringify({ name: "Ada" })
 };
-
 console.log(options.body);`
         }
       ]
     },
     {
-      title: '11. MERN end-to-end — putting it together',
-      videoUrl: 'https://www.youtube.com/embed/SccSCAaYOCw',
-      videoCaption:
-        'Review Express + API design as you plan how your React app will call your routes end-to-end.',
-      body: `Step 11 — project shape
+      title: '11. MERN end-to-end wiring',
+      slides: [
+        S(
+          'One mental model',
+          'Database schema → Express routes → React screens. Errors should map cleanly across layers.',
+          'intro',
+          'violet'
+        ),
+        S(
+          'Folders',
+          'server/: routes, models, middleware, config. client/: components, pages, api helpers.',
+          'content',
+          'slate'
+        ),
+        S(
+          'Environment',
+          'Server: PORT, MONGODB_URI, JWT_SECRET. Client: VITE_* public URLs only.',
+          'content',
+          'indigo'
+        ),
+        S(
+          'Ship a vertical slice',
+          'Pick one feature (e.g. “create post”) and take it from form → API → DB → list view.',
+          'summary',
+          'emerald'
+        )
+      ],
+      body: `Notes — wiring
 
-**Typical monorepo or two folders**
-- \`/server\` — Express + Mongoose, \`npm run dev\` with nodemon
-- \`/client\` — React (Vite), \`npm run dev\`
-
-**One flow**
-1. Model data in Mongoose
-2. Expose REST routes
-3. Build React screens that call those routes
-4. Add auth and protect routes on both sides
-
-**Quality**
-- Centralize API helpers (\`api.get/post\`)
-- Validate inputs on server always
-- Use environment variables for secrets`,
+Start small; add auth and roles after CRUD works.`,
       practices: []
     },
     {
-      title: '12. Deploy & keep learning',
-      videoUrl: 'https://www.youtube.com/embed/fBNz5xF-Kx4',
-      videoCaption:
-        'Revisit Node deployment topics — process managers, PORT, and hosting options (Render, Railway, etc.).',
-      body: `Step 12 — ship it
+      title: '12. Deploy & keep shipping',
+      slides: [
+        S(
+          'From laptop to internet',
+          'Host the API on a Node-friendly platform. Host the React build as static files. Point DNS and env vars.',
+          'intro',
+          'amber'
+        ),
+        S(
+          'Database in prod',
+          'Use Atlas M10+ or dedicated cluster for production; enable backups.',
+          'content',
+          'rose'
+        ),
+        S(
+          'HTTPS & secrets',
+          'TLS everywhere. Rotate JWT secrets if leaked. Monitor logs for 5xx spikes.',
+          'content',
+          'indigo'
+        ),
+        S(
+          'You are not done learning',
+          'Add tests, TypeScript, CI/CD, and observability — but you now have a MERN map. Build something real!',
+          'summary',
+          'violet'
+        )
+      ],
+      body: `Notes — deploy
 
-**Deploy ideas**
-- **API** — Render, Railway, Fly.io, Heroku-style hosts: set \`PORT\`, env vars, build command
-- **Database** — MongoDB Atlas (production cluster)
-- **Frontend** — Netlify, Vercel, Cloudflare Pages (static build of React)
-
-**Production checklist**
-- [ ] \`NODE_ENV=production\`
-- [ ] Strong \`JWT_SECRET\`
-- [ ] HTTPS only
-- [ ] Rate limiting & security headers (helmet)
-- [ ] Backups for database
-
-**Next skills**
-- TypeScript
-- Testing (Jest, React Testing Library)
-- State libraries (Redux, Zustand) if apps grow
-- Docker for repeatable environments
-
-You now have a MERN map — build a small project (e.g. task app with auth) end to end!`,
+**Next steps**: portfolio project, open source contributions, deeper React patterns (performance, suspense), and backend hardening (rate limits, helmet).`,
       practices: []
     }
   ]

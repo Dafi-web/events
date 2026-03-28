@@ -17,6 +17,7 @@ import CommentSection from '../components/CommentSection';
 import ImageGallery from '../components/ImageGallery';
 import CodePracticePanel from '../components/CodePracticePanel';
 import VideoEmbed from '../components/VideoEmbed';
+import LessonSlideshow from '../components/LessonSlideshow';
 
 const CATEGORY_LABELS = {
   stem: 'STEM',
@@ -288,8 +289,8 @@ const CourseDetail = () => {
                       Step-by-step lessons
                     </h2>
                     <p className="text-slate-600 text-sm mt-1">
-                      One lesson per page — use <strong>Next</strong> to continue. Watch the video, read the notes,
-                      then try the code practice.
+                      One lesson per page — use <strong>Next lesson</strong> at the bottom to continue. Step through
+                      the <strong>presentation</strong> first, then read the notes and try the hands-on practice.
                     </p>
                   </div>
                   <div className="text-sm font-medium text-indigo-700 tabular-nums">
@@ -324,7 +325,15 @@ const CourseDetail = () => {
                   </div>
 
                   <div className="p-6 md:p-10 space-y-8">
-                    {currentPage.videoUrl && (
+                    {(currentPage.slides || []).length > 0 && (
+                      <LessonSlideshow
+                        slides={currentPage.slides}
+                        resetKey={`${course._id}-${lessonSafe}`}
+                        lessonIndex={lessonSafe}
+                      />
+                    )}
+
+                    {!(currentPage.slides || []).length && currentPage.videoUrl && (
                       <section className="space-y-2">
                         <h4 className="text-sm font-semibold text-slate-500 uppercase tracking-wide flex items-center gap-2">
                           <PlayCircle className="w-4 h-4 text-indigo-700" />
