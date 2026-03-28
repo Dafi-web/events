@@ -39,6 +39,64 @@ function normalizeSlide(s) {
   return out;
 }
 
+function normalizeAssessment(a) {
+  if (!a || typeof a !== 'object') return undefined;
+  const rawQ = Array.isArray(a.questions) ? a.questions : [];
+  const questions = rawQ
+    .map((q) => ({
+      question: String(q.question || '').trim(),
+      options: Array.isArray(q.options) ? q.options.map((o) => String(o)) : [],
+      correctIndex: Math.max(0, parseInt(q.correctIndex, 10) || 0)
+    }))
+    .filter((q) => q.question && q.options.length >= 2);
+  if (!questions.length) return undefined;
+  const passingScore = Math.min(100, Math.max(0, Number(a.passingScore) || 70));
+  return {
+    title: String(a.title || 'Quick check').trim() || 'Quick check',
+    passingScore,
+    questions
+  };
+}
+
+function parseTipsFromBody(body) {
+  if (!body.courseTips) return [];
+  try {
+    const raw =
+      typeof body.courseTips === 'string' ? JSON.parse(body.courseTips) : body.courseTips;
+    if (!Array.isArray(raw)) return [];
+    return raw
+      .filter((t) => t && String(t.title || '').trim())
+      .map((t) => ({
+        title: String(t.title).trim(),
+        body: String(t.body || '')
+      }));
+  } catch {
+    return [];
+  }
+}
+
+/** @returns {object|null|undefined} project, null to clear, undefined if absent or invalid JSON */
+function parseSampleProjectFromBody(body) {
+  if (!body.sampleProject) return undefined;
+  try {
+    const raw =
+      typeof body.sampleProject === 'string'
+        ? JSON.parse(body.sampleProject)
+        : body.sampleProject;
+    if (!raw || typeof raw !== 'object') return null;
+    const title = String(raw.title || '').trim();
+    if (!title) return null;
+    return {
+      title,
+      description: String(raw.description || ''),
+      repoUrl: String(raw.repoUrl || '').trim(),
+      codeSample: String(raw.codeSample || '')
+    };
+  } catch {
+    return undefined;
+  }
+}
+
 function parsePages(body) {
   if (!body.pages) return [];
   try {
@@ -53,14 +111,21 @@ function parsePages(body) {
         const slides = Array.isArray(p.slides)
           ? p.slides.map(normalizeSlide).filter(Boolean)
           : [];
-        return {
+        const assessment = normalizeAssessment(p.assessment);
+        const pageOut = {
           title: String(p.title).trim(),
           body: String(p.body),
           practices,
           slides,
+          deepDive: String(p.deepDive || ''),
+          lessonTips: Array.isArray(p.lessonTips)
+            ? p.lessonTips.map(String).filter(Boolean)
+            : [],
           videoUrl: String(p.videoUrl || '').trim(),
           videoCaption: String(p.videoCaption || '').trim()
         };
+        if (assessment) pageOut.assessment = assessment;
+        return pageOut;
       });
   } catch {
     return [];
@@ -209,6 +274,9 @@ router.post(
         });
       }
 
+      const tips = parseTipsFromBody(req.body);
+      const sampleProject = parseSampleProjectFromBody(req.body);
+
       const courseData = {
         title: req.body.title.trim(),
         summary: (req.body.summary || '').trim(),
@@ -221,6 +289,8 @@ router.post(
         videos,
         createdBy: req.user.id
       };
+      if (tips.length) courseData.tips = tips;
+      if (sampleProject) courseData.sampleProject = sampleProject;
 
       if (images.length > 0) {
         courseData.coverImage = images[0].url;
@@ -316,6 +386,9 @@ router.put(
       const mergedImages = [...existingImages, ...newImages];
       const mergedVideos = [...existingVideos, ...newVideos];
 
+      const tips = parseTipsFromBody(req.body);
+      const sampleProject = parseSampleProjectFromBody(req.body);
+
       course.title = req.body.title.trim();
       course.summary = (req.body.summary || '').trim();
       course.description = req.body.description;
@@ -325,6 +398,14 @@ router.put(
       course.isPublished = req.body.isPublished === 'true' || req.body.isPublished === true;
       course.images = mergedImages;
       course.videos = mergedVideos;
+      course.tips = tips;
+      if (Object.prototype.hasOwnProperty.call(req.body, 'sampleProject')) {
+        if (sampleProject === null) {
+          course.set('sampleProject', undefined);
+        } else if (sampleProject) {
+          course.sampleProject = sampleProject;
+        }
+      }
 
       if (mergedImages.length > 0) {
         course.coverImage = mergedImages[0].url;

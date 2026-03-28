@@ -36,6 +36,8 @@ async function run() {
     existing.order = mern.order;
     existing.isPublished = mern.isPublished;
     existing.pages = mern.pages;
+    if (mern.tips) existing.tips = mern.tips;
+    if (mern.sampleProject) existing.sampleProject = mern.sampleProject;
     await existing.save();
     console.log('Updated MERN course:', existing._id.toString());
     await mongoose.disconnect();
@@ -50,6 +52,8 @@ async function run() {
     order: mern.order,
     isPublished: mern.isPublished,
     pages: mern.pages,
+    tips: mern.tips || [],
+    sampleProject: mern.sampleProject,
     createdBy: admin._id
   });
 

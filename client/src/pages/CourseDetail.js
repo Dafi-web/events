@@ -8,7 +8,9 @@ import {
   MessageCircle,
   ChevronRight,
   ChevronLeft,
-  ListChecks
+  ListChecks,
+  Lightbulb,
+  FolderGit2
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import api from '../utils/api';
@@ -17,7 +19,8 @@ import CommentSection from '../components/CommentSection';
 import ImageGallery from '../components/ImageGallery';
 import CodePracticePanel from '../components/CodePracticePanel';
 import VideoEmbed from '../components/VideoEmbed';
-import LessonSlideshow from '../components/LessonSlideshow';
+import LessonAnimatedPlayer from '../components/LessonAnimatedPlayer';
+import LessonQuiz from '../components/LessonQuiz';
 
 const CATEGORY_LABELS = {
   stem: 'STEM',
@@ -242,13 +245,59 @@ const CourseDetail = () => {
 
           <main className="lg:col-span-8 space-y-10">
             {activeSection === 'overview' && (
-              <div className="rounded-2xl bg-white border border-slate-200 p-6 md:p-8 shadow-sm">
-                <h2 className="text-xl font-bold text-slate-900 mb-4">About this course</h2>
-                <div
-                  className="prose prose-slate max-w-none text-slate-700 leading-relaxed whitespace-pre-wrap"
-                >
-                  {course.description}
+              <div className="space-y-8">
+                <div className="rounded-2xl bg-white border border-slate-200 p-6 md:p-8 shadow-sm">
+                  <h2 className="text-xl font-bold text-slate-900 mb-4">About this course</h2>
+                  <div
+                    className="prose prose-slate max-w-none text-slate-700 leading-relaxed whitespace-pre-wrap"
+                  >
+                    {course.description}
+                  </div>
                 </div>
+
+                {course.sampleProject && course.sampleProject.title && (
+                  <div className="rounded-2xl border border-indigo-200 bg-gradient-to-br from-indigo-50 to-white p-6 md:p-8 shadow-sm">
+                    <div className="flex items-center gap-2 mb-3">
+                      <FolderGit2 className="w-6 h-6 text-indigo-600" />
+                      <h2 className="text-xl font-bold text-slate-900">Sample project</h2>
+                    </div>
+                    <p className="text-slate-700 mb-3 whitespace-pre-wrap">{course.sampleProject.description}</p>
+                    {course.sampleProject.repoUrl && (
+                      <a
+                        href={course.sampleProject.repoUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex text-sm font-semibold text-indigo-600 hover:text-indigo-800 underline"
+                      >
+                        Open repository / starter →
+                      </a>
+                    )}
+                    {course.sampleProject.codeSample && (
+                      <pre className="mt-4 p-4 rounded-xl bg-slate-900 text-slate-100 text-xs overflow-x-auto font-mono whitespace-pre-wrap">
+                        {course.sampleProject.codeSample}
+                      </pre>
+                    )}
+                  </div>
+                )}
+
+                {course.tips && course.tips.length > 0 && (
+                  <div className="rounded-2xl bg-white border border-amber-200/80 p-6 md:p-8 shadow-sm">
+                    <div className="flex items-center gap-2 mb-4">
+                      <Lightbulb className="w-6 h-6 text-amber-500" />
+                      <h2 className="text-xl font-bold text-slate-900">Tips for success</h2>
+                    </div>
+                    <ul className="space-y-4">
+                      {course.tips.map((tip, i) => (
+                        <li key={i} className="border-l-4 border-amber-400 pl-4">
+                          <h3 className="font-semibold text-slate-900">{tip.title}</h3>
+                          {tip.body && (
+                            <p className="text-slate-600 text-sm mt-1 whitespace-pre-wrap">{tip.body}</p>
+                          )}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
               </div>
             )}
 
@@ -289,8 +338,9 @@ const CourseDetail = () => {
                       Step-by-step lessons
                     </h2>
                     <p className="text-slate-600 text-sm mt-1">
-                      One lesson per page — use <strong>Next lesson</strong> at the bottom to continue. Step through
-                      the <strong>presentation</strong> first, then read the notes and try the hands-on practice.
+                      One lesson per screen. Watch the <strong>animated walkthrough</strong> (play/pause
+                      auto-advance), then read the deep dive and notes, try code practice, and finish with the{' '}
+                      <strong>quick check</strong> when available.
                     </p>
                   </div>
                   <div className="text-sm font-medium text-indigo-700 tabular-nums">
@@ -326,7 +376,7 @@ const CourseDetail = () => {
 
                   <div className="p-6 md:p-10 space-y-8">
                     {(currentPage.slides || []).length > 0 && (
-                      <LessonSlideshow
+                      <LessonAnimatedPlayer
                         slides={currentPage.slides}
                         resetKey={`${course._id}-${lessonSafe}`}
                         lessonIndex={lessonSafe}
@@ -347,6 +397,17 @@ const CourseDetail = () => {
                       </section>
                     )}
 
+                    {currentPage.deepDive && String(currentPage.deepDive).trim() && (
+                      <section className="space-y-3">
+                        <h4 className="text-sm font-semibold text-slate-500 uppercase tracking-wide">
+                          Deep dive — detailed explanation
+                        </h4>
+                        <div className="prose prose-slate max-w-none text-slate-700 whitespace-pre-wrap rounded-2xl bg-indigo-50/60 border border-indigo-100 px-5 py-6 text-sm leading-relaxed">
+                          {currentPage.deepDive}
+                        </div>
+                      </section>
+                    )}
+
                     <section className="space-y-3">
                       <h4 className="text-sm font-semibold text-slate-500 uppercase tracking-wide">
                         Notes &amp; examples
@@ -355,6 +416,20 @@ const CourseDetail = () => {
                         {currentPage.body}
                       </div>
                     </section>
+
+                    {(currentPage.lessonTips || []).length > 0 && (
+                      <section className="space-y-2">
+                        <h4 className="text-sm font-semibold text-slate-500 uppercase tracking-wide flex items-center gap-2">
+                          <Lightbulb className="w-4 h-4 text-amber-500" />
+                          Lesson tips
+                        </h4>
+                        <ul className="list-disc list-inside space-y-1 text-slate-700 text-sm bg-amber-50/50 border border-amber-100 rounded-xl px-5 py-4">
+                          {(currentPage.lessonTips || []).map((tip, ti) => (
+                            <li key={ti}>{tip}</li>
+                          ))}
+                        </ul>
+                      </section>
+                    )}
 
                     {(currentPage.practices || []).length > 0 && (
                       <section className="space-y-2">
@@ -371,6 +446,15 @@ const CourseDetail = () => {
                         ))}
                       </section>
                     )}
+
+                    {currentPage.assessment &&
+                      currentPage.assessment.questions &&
+                      currentPage.assessment.questions.length > 0 && (
+                        <LessonQuiz
+                          assessment={currentPage.assessment}
+                          storageKey={`${course._id}-${lessonSafe}`}
+                        />
+                      )}
                   </div>
 
                   <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 px-6 md:px-10 py-6 bg-slate-100/80 border-t border-slate-200">

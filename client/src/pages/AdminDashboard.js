@@ -40,8 +40,20 @@ const AdminDashboard = () => {
     category: 'general',
     order: 0,
     isPublished: true,
+    courseTipsJson: '[]',
+    sampleProjectJson: '',
     pages: [
-      { title: '', body: '', practices: [], slides: [], videoUrl: '', videoCaption: '' }
+      {
+        title: '',
+        body: '',
+        practices: [],
+        slides: [],
+        videoUrl: '',
+        videoCaption: '',
+        deepDive: '',
+        lessonTipsRaw: '',
+        assessmentJson: ''
+      }
     ]
   });
   const [newNews, setNewNews] = useState({
@@ -92,8 +104,20 @@ const AdminDashboard = () => {
       category: 'general',
       order: 0,
       isPublished: true,
+      courseTipsJson: '[]',
+      sampleProjectJson: '',
       pages: [
-        { title: '', body: '', practices: [], slides: [], videoUrl: '', videoCaption: '' }
+        {
+          title: '',
+          body: '',
+          practices: [],
+          slides: [],
+          videoUrl: '',
+          videoCaption: '',
+          deepDive: '',
+          lessonTipsRaw: '',
+          assessmentJson: ''
+        }
       ]
     });
     setSelectedImages([]);
@@ -105,40 +129,21 @@ const AdminDashboard = () => {
     e.preventDefault();
     setCourseError('');
 
-    const validPages = (newCourse.pages || [])
-      .filter((p) => p.title.trim() && p.body.trim())
-      .map((p) => ({
-        title: p.title.trim(),
-        body: p.body,
-        practices: (p.practices || [])
-          .filter((pr) => pr && String(pr.title || '').trim())
-          .map((pr) => ({
-            title: String(pr.title).trim(),
-            instructions: pr.instructions || '',
-            starterCode: pr.starterCode || '',
-            solution: pr.solution || '',
-            language: ['html', 'css', 'javascript', 'mixed'].includes(pr.language)
-              ? pr.language
-              : 'html'
-          })),
-        videoUrl: (p.videoUrl || '').trim(),
-        videoCaption: (p.videoCaption || '').trim(),
-        slides: (p.slides || [])
-          .filter((s) => s && String(s.title || '').trim())
-          .map((s) => {
-            const slide = {
-              title: String(s.title).trim(),
-              body: s.body || '',
-              variant: ['intro', 'content', 'practice', 'summary'].includes(s.variant)
-                ? s.variant
-                : 'content',
-              theme: ['indigo', 'emerald', 'amber', 'rose', 'slate', 'violet'].includes(s.theme)
-                ? s.theme
-                : 'indigo'
-            };
-            const pr = s.practice;
-            if (pr && String(pr.title || '').trim()) {
-              slide.practice = {
+    let validPages;
+    try {
+      validPages = (newCourse.pages || [])
+        .filter((p) => p.title.trim() && p.body.trim())
+        .map((p) => {
+          let assessment;
+          if (p.assessmentJson && String(p.assessmentJson).trim()) {
+            assessment = JSON.parse(p.assessmentJson);
+          }
+          const pageOut = {
+            title: p.title.trim(),
+            body: p.body,
+            practices: (p.practices || [])
+              .filter((pr) => pr && String(pr.title || '').trim())
+              .map((pr) => ({
                 title: String(pr.title).trim(),
                 instructions: pr.instructions || '',
                 starterCode: pr.starterCode || '',
@@ -146,13 +151,68 @@ const AdminDashboard = () => {
                 language: ['html', 'css', 'javascript', 'mixed'].includes(pr.language)
                   ? pr.language
                   : 'html'
-              };
-            }
-            return slide;
-          })
-      }));
+              })),
+            videoUrl: (p.videoUrl || '').trim(),
+            videoCaption: (p.videoCaption || '').trim(),
+            deepDive: (p.deepDive || '').trim(),
+            lessonTips: (p.lessonTipsRaw || '')
+              .split('\n')
+              .map((line) => line.trim())
+              .filter(Boolean),
+            slides: (p.slides || [])
+              .filter((s) => s && String(s.title || '').trim())
+              .map((s) => {
+                const slide = {
+                  title: String(s.title).trim(),
+                  body: s.body || '',
+                  variant: ['intro', 'content', 'practice', 'summary'].includes(s.variant)
+                    ? s.variant
+                    : 'content',
+                  theme: ['indigo', 'emerald', 'amber', 'rose', 'slate', 'violet'].includes(s.theme)
+                    ? s.theme
+                    : 'indigo'
+                };
+                const pr = s.practice;
+                if (pr && String(pr.title || '').trim()) {
+                  slide.practice = {
+                    title: String(pr.title).trim(),
+                    instructions: pr.instructions || '',
+                    starterCode: pr.starterCode || '',
+                    solution: pr.solution || '',
+                    language: ['html', 'css', 'javascript', 'mixed'].includes(pr.language)
+                      ? pr.language
+                      : 'html'
+                  };
+                }
+                return slide;
+              })
+          };
+          if (assessment) pageOut.assessment = assessment;
+          return pageOut;
+        });
+    } catch (err) {
+      setCourseError('Invalid JSON in a lesson field (check assessment JSON).');
+      return;
+    }
+
     if (!newCourse.title.trim() || !newCourse.description.trim()) {
       setCourseError('Title and description are required.');
+      return;
+    }
+
+    let courseTipsPayload = '[]';
+    let sampleProjectPayload = '{}';
+    try {
+      if (newCourse.courseTipsJson && newCourse.courseTipsJson.trim()) {
+        JSON.parse(newCourse.courseTipsJson);
+        courseTipsPayload = newCourse.courseTipsJson.trim();
+      }
+      if (newCourse.sampleProjectJson && String(newCourse.sampleProjectJson).trim()) {
+        JSON.parse(newCourse.sampleProjectJson);
+        sampleProjectPayload = String(newCourse.sampleProjectJson).trim();
+      }
+    } catch {
+      setCourseError('Invalid course tips or sample project JSON.');
       return;
     }
 
@@ -165,6 +225,8 @@ const AdminDashboard = () => {
       formData.append('order', String(newCourse.order ?? 0));
       formData.append('isPublished', newCourse.isPublished);
       formData.append('pages', JSON.stringify(validPages));
+      formData.append('courseTips', courseTipsPayload);
+      formData.append('sampleProject', sampleProjectPayload);
 
       if (editingCourse) {
         formData.append(
@@ -285,6 +347,21 @@ const AdminDashboard = () => {
 
   const handleEditCourse = (course) => {
     setEditingCourse(course);
+    const tips = course.tips && course.tips.length ? course.tips : [];
+    const sp = course.sampleProject;
+    const sampleProjectJson =
+      sp && sp.title
+        ? JSON.stringify(
+            {
+              title: sp.title || '',
+              description: sp.description || '',
+              repoUrl: sp.repoUrl || '',
+              codeSample: sp.codeSample || ''
+            },
+            null,
+            2
+          )
+        : '';
     setNewCourse({
       title: course.title || '',
       summary: course.summary || '',
@@ -292,6 +369,12 @@ const AdminDashboard = () => {
       category: course.category || 'general',
       order: course.order ?? 0,
       isPublished: course.isPublished !== false,
+      courseTipsJson: JSON.stringify(
+        tips.map((t) => ({ title: t.title || '', body: t.body || '' })),
+        null,
+        2
+      ),
+      sampleProjectJson,
       pages:
         course.pages && course.pages.length
           ? course.pages.map((p) => ({
@@ -306,6 +389,11 @@ const AdminDashboard = () => {
               })),
               videoUrl: p.videoUrl || '',
               videoCaption: p.videoCaption || '',
+              deepDive: p.deepDive || '',
+              lessonTipsRaw: Array.isArray(p.lessonTips) ? p.lessonTips.join('\n') : '',
+              assessmentJson: p.assessment
+                ? JSON.stringify(p.assessment, null, 2)
+                : '',
               slides: (p.slides || []).map((s) => ({
                 title: s.title || '',
                 body: s.body || '',
@@ -329,7 +417,10 @@ const AdminDashboard = () => {
                 practices: [],
                 slides: [],
                 videoUrl: '',
-                videoCaption: ''
+                videoCaption: '',
+                deepDive: '',
+                lessonTipsRaw: '',
+                assessmentJson: ''
               }
             ]
     });
@@ -350,7 +441,17 @@ const AdminDashboard = () => {
       ...newCourse,
       pages: [
         ...(newCourse.pages || []),
-        { title: '', body: '', practices: [], slides: [], videoUrl: '', videoCaption: '' }
+        {
+          title: '',
+          body: '',
+          practices: [],
+          slides: [],
+          videoUrl: '',
+          videoCaption: '',
+          deepDive: '',
+          lessonTipsRaw: '',
+          assessmentJson: ''
+        }
       ]
     });
   };
@@ -431,7 +532,10 @@ const AdminDashboard = () => {
               practices: [],
               slides: [],
               videoUrl: '',
-              videoCaption: ''
+              videoCaption: '',
+              deepDive: '',
+              lessonTipsRaw: '',
+              assessmentJson: ''
             }
           ]
     });
@@ -625,6 +729,37 @@ const AdminDashboard = () => {
                           />
                         </div>
 
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                              Course tips (JSON array: title + body)
+                            </label>
+                            <textarea
+                              placeholder='[{"title":"Tip","body":"..."}]'
+                              value={newCourse.courseTipsJson}
+                              onChange={(e) =>
+                                setNewCourse({ ...newCourse, courseTipsJson: e.target.value })
+                              }
+                              className="w-full px-3 py-2 border rounded-lg font-mono text-xs"
+                              rows={4}
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                              Sample project (JSON, or empty <code className="text-xs">{}</code> to clear)
+                            </label>
+                            <textarea
+                              placeholder='{"title":"Repo name","description":"...","repoUrl":"https://","codeSample":"..."}'
+                              value={newCourse.sampleProjectJson}
+                              onChange={(e) =>
+                                setNewCourse({ ...newCourse, sampleProjectJson: e.target.value })
+                              }
+                              className="w-full px-3 py-2 border rounded-lg font-mono text-xs"
+                              rows={4}
+                            />
+                          </div>
+                        </div>
+
                         <div className="border-t border-gray-200 pt-4">
                           <div className="flex justify-between items-center mb-2">
                             <span className="text-sm font-medium text-gray-700">Reading pages (lessons)</span>
@@ -756,6 +891,35 @@ const AdminDashboard = () => {
                                   className="w-full px-3 py-2 border rounded-lg text-sm"
                                   rows={4}
                                 />
+                                <textarea
+                                  placeholder="Deep dive (extra detail for learners — shows after animated walkthrough)"
+                                  value={page.deepDive || ''}
+                                  onChange={(e) => updateCoursePage(idx, 'deepDive', e.target.value)}
+                                  className="w-full px-3 py-2 border rounded-lg text-sm"
+                                  rows={3}
+                                />
+                                <textarea
+                                  placeholder="Lesson tips (one per line)"
+                                  value={page.lessonTipsRaw || ''}
+                                  onChange={(e) => updateCoursePage(idx, 'lessonTipsRaw', e.target.value)}
+                                  className="w-full px-3 py-2 border rounded-lg text-sm"
+                                  rows={3}
+                                />
+                                <div>
+                                  <label className="block text-xs font-medium text-gray-600 mb-1">
+                                    Lesson quiz (JSON: title, passingScore 0–100, questions with options &
+                                    correctIndex)
+                                  </label>
+                                  <textarea
+                                    placeholder='{"title":"Quick check","passingScore":70,"questions":[{"question":"...","options":["A","B"],"correctIndex":0}]}'
+                                    value={page.assessmentJson || ''}
+                                    onChange={(e) =>
+                                      updateCoursePage(idx, 'assessmentJson', e.target.value)
+                                    }
+                                    className="w-full px-3 py-2 border rounded-lg font-mono text-xs"
+                                    rows={5}
+                                  />
+                                </div>
                                 <div className="pt-2 border-t border-gray-100 space-y-2">
                                   <div className="flex justify-between items-center">
                                     <span className="text-xs font-medium text-gray-600">Code practices</span>

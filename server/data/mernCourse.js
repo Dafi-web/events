@@ -23,6 +23,30 @@ Prerequisites: comfort with HTML/CSS/JS. Pair with our *Web Development* course 
   order: 1,
   isPublished: true,
 
+  tips: [
+    {
+      title: 'How to use this course',
+      body: 'Use the animated walkthrough at the top of each lesson, then read the deep dive and notes. Try code practices in order. Aim to pass each lesson quiz at or above the passing score — you can retake anytime.'
+    },
+    {
+      title: 'Sample repo',
+      body: 'The starter project below mirrors a minimal MERN-style layout (client + server folders). Clone it and run locally alongside these lessons.'
+    }
+  ],
+
+  sampleProject: {
+    title: 'mern-starter-skeleton',
+    description:
+      'Minimal folders for a MERN-style app: /server with Express + Mongoose, /client with Vite + React. Replace placeholders with your own routes and components.',
+    repoUrl: 'https://github.com/example/mern-starter-skeleton',
+    codeSample: `// server/index.js — minimal Express listen
+const express = require('express');
+const app = express();
+app.use(express.json());
+app.get('/api/health', (req, res) => res.json({ ok: true }));
+app.listen(process.env.PORT || 5000, () => console.log('API up'));`
+  },
+
   pages: [
     {
       title: '1. What is MERN? Roadmap & setup',
@@ -57,6 +81,40 @@ Prerequisites: comfort with HTML/CSS/JS. Pair with our *Web Development* course 
 **Tools**: Node includes npm. **Atlas** gives a hosted MongoDB URL. **.env** files store secrets locally (never commit real secrets).
 
 **Next**: Node modules and npm scripts.`,
+      deepDive: `Why MERN together: one language (JavaScript) across browser and server lowers context switching. MongoDB’s flexible documents fit JSON APIs well. Express is the thin layer between HTTP and your data. React handles UI state and composition.
+
+When you debug, always know which layer failed: network (browser devtools → Network), API (Express logs, status codes), or database (Mongoose errors, connection string).`,
+      lessonTips: [
+        'Install Node LTS before lesson 2 — mismatched Node versions cause confusing npm errors.',
+        'Keep a scratch folder for `npm init` experiments so you do not clutter a real project.',
+        'Bookmark your Atlas cluster connection string; you will paste it into `.env` later.'
+      ],
+      assessment: {
+        title: 'Check — MERN basics',
+        passingScore: 70,
+        questions: [
+          {
+            question: 'What does the "M" in MERN stand for?',
+            options: ['MySQL', 'MongoDB', 'Markdown', 'Middleware'],
+            correctIndex: 1
+          },
+          {
+            question: 'Which runtime executes JavaScript on the server in this stack?',
+            options: ['React', 'Express', 'Node.js', 'Vite'],
+            correctIndex: 2
+          },
+          {
+            question: 'In a typical flow, who sends HTTP requests to your API?',
+            options: [
+              'Only MongoDB',
+              'The React app in the browser',
+              'Only the terminal',
+              'CSS files'
+            ],
+            correctIndex: 1
+          }
+        ]
+      },
       practices: []
     },
     {

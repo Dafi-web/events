@@ -35,14 +35,51 @@ const slideSchema = new mongoose.Schema(
   { _id: false }
 );
 
+const assessmentQuestionSchema = new mongoose.Schema(
+  {
+    question: { type: String, required: true },
+    options: [{ type: String }],
+    correctIndex: { type: Number, default: 0 }
+  },
+  { _id: false }
+);
+
+const assessmentSchema = new mongoose.Schema(
+  {
+    title: { type: String, default: 'Quick check' },
+    passingScore: { type: Number, default: 70 },
+    questions: { type: [assessmentQuestionSchema], default: [] }
+  },
+  { _id: false }
+);
+
+const tipItemSchema = new mongoose.Schema(
+  {
+    title: { type: String, required: true, trim: true },
+    body: { type: String, default: '' }
+  },
+  { _id: false }
+);
+
+const sampleProjectSchema = new mongoose.Schema(
+  {
+    title: { type: String, default: '', trim: true },
+    description: { type: String, default: '' },
+    repoUrl: { type: String, default: '' },
+    codeSample: { type: String, default: '' }
+  },
+  { _id: false }
+);
+
 const pageSchema = new mongoose.Schema(
   {
     title: { type: String, required: true, trim: true },
     body: { type: String, required: true },
     practices: { type: [practiceSchema], default: [] },
-    /** In-app step-by-step presentation (replaces external video when present) */
     slides: { type: [slideSchema], default: [] },
-    /** Optional embedded video per lesson (used only if slides are empty) */
+    deepDive: { type: String, default: '' },
+    lessonTips: [{ type: String }],
+    assessment: assessmentSchema,
     videoUrl: { type: String, default: '', trim: true },
     videoCaption: { type: String, default: '', trim: true }
   },
@@ -82,6 +119,10 @@ const courseSchema = new mongoose.Schema({
   }],
   /** Structured lesson pages with optional hands-on practices */
   pages: { type: [pageSchema], default: [] },
+  /** Course-wide tips (shown on overview) */
+  tips: { type: [tipItemSchema], default: [] },
+  /** Starter repo / sample project for learners */
+  sampleProject: sampleProjectSchema,
   category: {
     type: String,
     enum: ['stem', 'languages', 'arts', 'business', 'technology', 'general'],
