@@ -23,6 +23,16 @@ const LessonQuiz = ({ assessment, storageKey }) => {
     return { correct, total: questions.length, pct, passed };
   }, [submitted, questions, answers, passing]);
 
+  const [bestStored, setBestStored] = useState(null);
+  useEffect(() => {
+    if (!storageKey) return;
+    try {
+      setBestStored(JSON.parse(localStorage.getItem(`quiz-best-${storageKey}`) || 'null'));
+    } catch {
+      setBestStored(null);
+    }
+  }, [storageKey, submitted]);
+
   if (!questions.length) return null;
 
   const pick = (qi, optIdx) => {
@@ -58,16 +68,6 @@ const LessonQuiz = ({ assessment, storageKey }) => {
     setSubmitted(false);
   };
 
-  const [bestStored, setBestStored] = useState(null);
-  useEffect(() => {
-    if (!storageKey) return;
-    try {
-      setBestStored(JSON.parse(localStorage.getItem(`quiz-best-${storageKey}`) || 'null'));
-    } catch {
-      setBestStored(null);
-    }
-  }, [storageKey, submitted]);
-
   return (
     <section className="rounded-2xl border border-slate-200 bg-gradient-to-b from-white to-slate-50 p-6 shadow-sm">
       <div className="flex items-center gap-2 mb-4">
@@ -88,9 +88,6 @@ const LessonQuiz = ({ assessment, storageKey }) => {
             <ul className="space-y-2">
               {(q.options || []).map((opt, oi) => {
                 const selected = answers[qi] === oi;
-                const show =
-                  submitted &&
-                  (oi === Number(q.correctIndex) || (selected && oi !== Number(q.correctIndex)));
                 const correct = oi === Number(q.correctIndex);
                 return (
                   <li key={oi}>
