@@ -1,5 +1,5 @@
 import React from 'react';
-import { Heart, Globe, Lightbulb, Users, Target, Eye, Award, Shield, Code, Monitor, Smartphone, Database, Building2, BookOpen, Calendar, Zap } from 'lucide-react';
+import { Heart, Globe, Lightbulb, Users, Target, Eye, Award, Shield, Code, Monitor, Smartphone, Database, Building2, BookOpen, Zap } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import DafiTechLogo from '../components/DafiTechLogo';
 import TeamMembers from '../components/TeamMembers';
@@ -13,9 +13,9 @@ const About = () => {
       description: 'We empower entrepreneurs and businesses to reach their full potential through our comprehensive platform.'
     },
     {
-      icon: Calendar,
-      title: 'Community Events',
-      description: 'Connecting professionals through networking events, workshops, and collaborative opportunities.'
+      icon: BookOpen,
+      title: 'Online school',
+      description: 'Structured courses with video lessons, readings, and materials you can study at your own pace.'
     },
     {
       icon: BookOpen,
@@ -109,7 +109,7 @@ const About = () => {
               <div className="space-y-4 text-gray-600">
                 <p>
                   <strong>Business Directory:</strong> Showcase your business to a global audience<br/>
-                  <strong>Event Management:</strong> Host and discover professional events<br/>
+                  <strong>Online courses:</strong> Video, readings, and lesson pages managed by our team<br/>
                   <strong>Learning Platform:</strong> Access expert-led courses and training<br/>
                   <strong>Networking:</strong> Connect with like-minded professionals
                 </p>
@@ -172,7 +172,7 @@ const About = () => {
               <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">Our Mission</h2>
               <p className="text-lg text-gray-600 mb-6">
                 To empower professionals and businesses worldwide by providing a comprehensive platform 
-                that combines business networking, event management, and educational resources.
+                that combines business networking, online courses, and educational resources.
               </p>
               <p className="text-lg text-gray-600">
                 We strive to break down barriers to professional success by creating an inclusive 
@@ -195,11 +195,11 @@ const About = () => {
                   </div>
                   <div>
                     <div className="text-3xl font-bold text-blue-600">1000+</div>
-                    <div className="text-gray-600">Events</div>
+                    <div className="text-gray-600">Learners</div>
                   </div>
                   <div>
                     <div className="text-3xl font-bold text-blue-600">50+</div>
-                    <div className="text-gray-600">Courses</div>
+                    <div className="text-gray-600">Programs</div>
                   </div>
                 </div>
               </div>
@@ -262,22 +262,22 @@ const About = () => {
               </div>
             </div>
 
-            {/* Events & Networking */}
+            {/* Online school */}
             <div className="bg-white rounded-lg p-8 shadow-md">
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">Events & Networking</h3>
+              <h3 className="text-2xl font-bold text-gray-900 mb-4">Online school</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <h4 className="text-lg font-semibold text-purple-600 mb-2">Event Management</h4>
+                  <h4 className="text-lg font-semibold text-purple-600 mb-2">Courses & lessons</h4>
                   <p className="text-gray-600">
-                    Host professional events, workshops, and networking sessions. Manage attendees, 
-                    collect feedback, and track engagement metrics.
+                    Administrators publish courses with videos, images, and reading pages. Learners open a
+                    course to watch, read, and join the discussion.
                   </p>
                 </div>
                 <div>
-                  <h4 className="text-lg font-semibold text-purple-600 mb-2">Professional Networking</h4>
+                  <h4 className="text-lg font-semibold text-purple-600 mb-2">Community</h4>
                   <p className="text-gray-600">
-                    Connect with industry peers, potential clients, and business partners. 
-                    Build meaningful relationships that drive career and business growth.
+                    Connect with peers through comments and reactions on each course. Build habits with a clear
+                    layout designed for online study.
                   </p>
                 </div>
               </div>
@@ -375,8 +375,8 @@ const About = () => {
             </div>
             <div className="text-center">
               <div className="text-4xl font-bold text-purple-600 mb-2">1000+</div>
-              <div className="text-gray-600 font-medium">Events Hosted</div>
-              <div className="text-sm text-gray-500 mt-1">Building connections</div>
+              <div className="text-gray-600 font-medium">Course enrollments</div>
+              <div className="text-sm text-gray-500 mt-1">Learning together</div>
             </div>
             <div className="text-center">
               <div className="text-4xl font-bold text-indigo-600 mb-2">50+</div>

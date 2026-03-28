@@ -14,7 +14,8 @@ const ReactionButtons = ({ contentType, contentId, initialLikes = 0, initialDisl
   const fetchReactions = useCallback(async () => {
     try {
       // Convert contentType to plural form for API calls
-      const apiContentType = contentType === 'event' ? 'events' : contentType;
+      const apiContentType =
+        contentType === 'event' ? 'events' : contentType === 'course' ? 'courses' : contentType;
       const response = await api.get(`/reactions/${apiContentType}/${contentId}`);
       setLikes(response.data.likes);
       setDislikes(response.data.dislikes);
@@ -22,13 +23,15 @@ const ReactionButtons = ({ contentType, contentId, initialLikes = 0, initialDisl
       // Check if user has reacted
       if (user && isAuthenticated) {
         // Convert contentType to plural form for API calls
-        const apiContentType = contentType === 'event' ? 'events' : contentType;
+        const apiContentType =
+          contentType === 'event' ? 'events' : contentType === 'course' ? 'courses' : contentType;
         const content = await api.get(`/${apiContentType}/${contentId}`);
         const contentData = content.data;
         
-        if (Array.isArray(contentData.likes) && contentData.likes.includes(user._id)) {
+        const uid = user.id || user._id;
+        if (Array.isArray(contentData.likes) && contentData.likes.some((id) => String(id) === String(uid))) {
           setUserReaction('like');
-        } else if (Array.isArray(contentData.dislikes) && contentData.dislikes.includes(user._id)) {
+        } else if (Array.isArray(contentData.dislikes) && contentData.dislikes.some((id) => String(id) === String(uid))) {
           setUserReaction('dislike');
         } else {
           setUserReaction(null);
@@ -47,7 +50,8 @@ const ReactionButtons = ({ contentType, contentId, initialLikes = 0, initialDisl
       
       if (!hasViewed) {
         // Convert contentType to plural form for API calls
-        const apiContentType = contentType === 'event' ? 'events' : contentType;
+        const apiContentType =
+          contentType === 'event' ? 'events' : contentType === 'course' ? 'courses' : contentType;
         // Increment view count on the server
         await api.post(`/${apiContentType}/${contentId}/view`);
         // Mark as viewed in this session
@@ -79,7 +83,8 @@ const ReactionButtons = ({ contentType, contentId, initialLikes = 0, initialDisl
     setLoading(true);
     try {
       // Convert contentType to plural form for API calls
-      const apiContentType = contentType === 'event' ? 'events' : contentType;
+      const apiContentType =
+        contentType === 'event' ? 'events' : contentType === 'course' ? 'courses' : contentType;
       const response = await api.post(`/reactions/${apiContentType}/${contentId}/${reactionType}`);
       
       setLikes(response.data.likes);

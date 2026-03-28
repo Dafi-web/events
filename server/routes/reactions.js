@@ -3,6 +3,7 @@ const { auth } = require('../middleware/auth');
 const Event = require('../models/Event');
 const News = require('../models/News');
 const Directory = require('../models/Directory');
+const Course = require('../models/Course');
 
 const router = express.Router();
 
@@ -126,6 +127,28 @@ router.post('/directory/:id/dislike', auth, async (req, res) => {
   }
 });
 
+// @route   POST /api/reactions/courses/:id/like
+router.post('/courses/:id/like', auth, async (req, res) => {
+  try {
+    const result = await toggleReaction(Course, req.params.id, req.user.id, 'like');
+    res.json(result);
+  } catch (error) {
+    console.error('Toggle course like error:', error);
+    res.status(500).json({ msg: 'Server error' });
+  }
+});
+
+// @route   POST /api/reactions/courses/:id/dislike
+router.post('/courses/:id/dislike', auth, async (req, res) => {
+  try {
+    const result = await toggleReaction(Course, req.params.id, req.user.id, 'dislike');
+    res.json(result);
+  } catch (error) {
+    console.error('Toggle course dislike error:', error);
+    res.status(500).json({ msg: 'Server error' });
+  }
+});
+
 // @route   GET /api/reactions/events/:id
 // @desc    Get reaction counts for an event
 // @access  Public
@@ -182,6 +205,24 @@ router.get('/directory/:id', async (req, res) => {
     });
   } catch (error) {
     console.error('Get directory reactions error:', error);
+    res.status(500).json({ msg: 'Server error' });
+  }
+});
+
+// @route   GET /api/reactions/courses/:id
+router.get('/courses/:id', async (req, res) => {
+  try {
+    const course = await Course.findById(req.params.id).select('likes dislikes');
+    if (!course) {
+      return res.status(404).json({ msg: 'Course not found' });
+    }
+
+    res.json({
+      likes: course.likes.length,
+      dislikes: course.dislikes.length
+    });
+  } catch (error) {
+    console.error('Get course reactions error:', error);
     res.status(500).json({ msg: 'Server error' });
   }
 });

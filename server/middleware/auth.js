@@ -31,5 +31,19 @@ const adminAuth = (req, res, next) => {
   }
 };
 
-module.exports = { auth, adminAuth };
+/** Sets req.user when a valid Bearer token is present; otherwise continues without error */
+const optionalAuth = async (req, res, next) => {
+  try {
+    const token = req.header('Authorization')?.replace('Bearer ', '');
+    if (!token) return next();
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findById(decoded.id).select('-password');
+    if (user) req.user = user;
+  } catch {
+    // ignore invalid tokens for optional routes
+  }
+  next();
+};
+
+module.exports = { auth, adminAuth, optionalAuth };
 

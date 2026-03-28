@@ -1,12 +1,12 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { LanguageProvider } from './context/LanguageContext';
 import Layout from './components/Layout';
 import Home from './pages/Home';
 import About from './pages/About';
-import Events from './pages/Events';
-import EventDetail from './pages/EventDetail';
+import Courses from './pages/Courses';
+import CourseDetail from './pages/CourseDetail';
 import News from './pages/News';
 import Directory from './pages/Directory';
 import DirectoryDetail from './pages/DirectoryDetail';
@@ -35,8 +35,10 @@ function App() {
             <Route path="/" element={<Layout />}>
               <Route index element={<Home />} />
               <Route path="about" element={<About />} />
-              <Route path="events" element={<Events />} />
-              <Route path="events/:id" element={<EventDetail />} />
+              <Route path="courses" element={<Courses />} />
+              <Route path="courses/:id" element={<CourseDetail />} />
+              <Route path="events" element={<Navigate to="/courses" replace />} />
+              <Route path="events/:id" element={<Navigate to="/courses" replace />} />
               <Route path="news" element={<News />} />
               <Route path="directory" element={<Directory />} />
               <Route path="directory/:id" element={<DirectoryDetail />} />

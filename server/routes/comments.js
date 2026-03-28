@@ -5,6 +5,7 @@ const Comment = require('../models/CommentFixed');
 const Event = require('../models/Event');
 const News = require('../models/News');
 const Directory = require('../models/Directory');
+const Course = require('../models/Course');
 
 const router = express.Router();
 
@@ -13,7 +14,7 @@ const router = express.Router();
 // @access  Private
 router.post('/', auth, [
   body('content').trim().notEmpty().withMessage('Comment content is required').isLength({ max: 5000 }).withMessage('Comment too long'),
-  body('contentType').isIn(['event', 'news', 'directory']).withMessage('Invalid content type'),
+  body('contentType').isIn(['event', 'news', 'directory', 'course']).withMessage('Invalid content type'),
   body('contentId').isMongoId().withMessage('Invalid content ID'),
   body('parentComment').optional().isMongoId().withMessage('Invalid parent comment ID')
 ], async (req, res) => {
@@ -46,6 +47,9 @@ router.post('/', auth, [
         break;
       case 'directory':
         contentModel = Directory;
+        break;
+      case 'course':
+        contentModel = Course;
         break;
       default:
         return res.status(400).json({ msg: 'Invalid content type' });
@@ -137,7 +141,7 @@ router.get('/:contentType/:contentId', async (req, res) => {
     const skip = (page - 1) * limit;
 
     // Validate content type
-    if (!['event', 'news', 'directory'].includes(contentType)) {
+    if (!['event', 'news', 'directory', 'course'].includes(contentType)) {
       return res.status(400).json({ msg: 'Invalid content type' });
     }
 
@@ -237,8 +241,13 @@ router.delete('/:id', auth, async (req, res) => {
       case 'directory':
         contentModel = Directory;
         break;
+      case 'course':
+        contentModel = Course;
+        break;
     }
-    await contentModel.findByIdAndUpdate(comment.contentId, { $inc: { commentCount: -1 } });
+    if (contentModel) {
+      await contentModel.findByIdAndUpdate(comment.contentId, { $inc: { commentCount: -1 } });
+    }
 
     res.json({ msg: 'Comment deleted successfully' });
   } catch (error) {

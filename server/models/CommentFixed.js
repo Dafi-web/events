@@ -14,7 +14,7 @@ const commentSchema = new mongoose.Schema({
   },
   contentType: { 
     type: String, 
-    enum: ['event', 'news', 'directory'], 
+    enum: ['event', 'news', 'directory', 'course'], 
     required: true 
   },
   contentId: { 

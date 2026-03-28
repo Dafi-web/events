@@ -104,6 +104,7 @@ app.get('/api', (req, res) => {
     endpoints: [
       '/api/auth',
       '/api/users',
+      '/api/courses',
       '/api/events',
       '/api/news',
       '/api/directory',
@@ -121,6 +122,7 @@ app.get('/api', (req, res) => {
 // Routes
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/users', require('./routes/users'));
+app.use('/api/courses', require('./routes/courses'));
 app.use('/api/events', require('./routes/events'));
 app.use('/api/news', require('./routes/news'));
 app.use('/api/directory', require('./routes/directory'));

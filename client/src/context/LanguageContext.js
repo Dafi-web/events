@@ -15,7 +15,7 @@ const translations = {
     // Navigation
     home: 'Home',
     about: 'About',
-    events: 'Events',
+    courses: 'Courses',
     news: 'News',
     directory: 'Directory',
     tutorials: 'Tutorials',
@@ -46,7 +46,7 @@ const translations = {
     
     // Home Page
     welcomeTitle: 'Welcome to DafiTech',
-    welcomeSubtitle: 'Connecting professionals worldwide through business, events, and learning',
+    welcomeSubtitle: 'Connecting professionals worldwide through business, online courses, and learning',
     upcomingEvents: 'Upcoming Events',
     latestNews: 'Latest News',
     featuredCourses: 'Featured Courses',
@@ -103,7 +103,7 @@ const translations = {
     
     // Admin
     dashboard: 'Dashboard',
-    manageEvents: 'Manage Events',
+    manageCourses: 'Manage Courses',
     manageUsers: 'Manage Users',
     manageNews: 'Manage News',
     manageDirectory: 'Manage Directory',
@@ -119,7 +119,7 @@ const translations = {
     // Navigation
     home: 'መነሻ',
     about: 'ስለ እኛ',
-    events: 'መርሃ ግብሮች',
+    courses: 'ኮርሶች',
     news: 'ዜና',
     directory: 'ዝርዝር',
     tutorials: 'ትምህርቶች',
@@ -150,7 +150,7 @@ const translations = {
     
     // Home Page
     welcomeTitle: 'ወደ DafiTech እንኳን ደህና መጡ',
-    welcomeSubtitle: 'በንግድ፣ በመርሃ ግብሮች እና በትምህርት በኩል ባለሙያዎችን በዓለም አቀፍ ደረጃ በማገናኘት',
+    welcomeSubtitle: 'በንግድ፣ በመስመር ላይ ኮርሶች እና በትምህርት በኩል ባለሙያዎችን በዓለም አቀፍ ደረጃ በማገናኘት',
     upcomingEvents: 'የሚመጡ መርሃ ግብሮች',
     latestNews: 'የቅርብ ጊዜ ዜና',
     featuredCourses: 'የተመረጡ ትምህርቶች',
@@ -207,7 +207,7 @@ const translations = {
     
     // Admin
     dashboard: 'ዳሽቦርድ',
-    manageEvents: 'መርሃ ግብሮችን አስተዳድር',
+    manageCourses: 'ኮርሶችን አስተዳድር',
     manageUsers: 'ተጠቃሚዎችን አስተዳድር',
     manageNews: 'ዜናዎችን አስተዳድር',
     manageDirectory: 'ዝርዝርን አስተዳድር',

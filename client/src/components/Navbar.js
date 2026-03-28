@@ -17,7 +17,7 @@ const Navbar = () => {
   const navigation = [
     { name: t('home'), href: '/' },
     { name: t('about'), href: '/about' },
-    { name: t('events'), href: '/events' },
+    { name: t('courses'), href: '/courses' },
     { name: t('news'), href: '/news' },
     { name: t('directory'), href: '/directory' },
     { name: t('tutorials'), href: '/tutorials' },
@@ -45,7 +45,7 @@ const Navbar = () => {
             </Link>
             <div className="hidden sm:block">
               <span className="text-sm text-gray-600">
-                Business • Events • Learning
+                Business • Courses • Learning
               </span>
             </div>
           </div>

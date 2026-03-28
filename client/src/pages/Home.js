@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Calendar, Newspaper, Users, Heart, MapPin, Clock, ArrowRight, Globe, Users2, Lightbulb, Building2, BookOpen, Zap, Code, Award, TrendingUp, Star, MessageCircle } from 'lucide-react';
+import { Calendar, Newspaper, Users, Heart, ArrowRight, Globe, Users2, Lightbulb, Building2, BookOpen, Zap, Code, Award, TrendingUp, Star, MessageCircle } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import api from '../utils/api';
 import MotivationalSlider from '../components/MotivationalSlider';
 
 const Home = () => {
   const { t } = useLanguage();
-  const [events, setEvents] = useState([]);
+  const [catalogCourses, setCatalogCourses] = useState([]);
   const [news, setNews] = useState([]);
   const [stats, setStats] = useState({
     totalUsers: 0,
-    totalEvents: 0,
+    totalSchoolCourses: 0,
     totalBusinesses: 0,
     totalCourses: 0
   });
@@ -20,19 +20,19 @@ const Home = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [eventsRes, newsRes, directoryRes, tutorialsRes] = await Promise.all([
-          api.get('/events?limit=4'),
+        const [coursesRes, newsRes, directoryRes, tutorialsRes] = await Promise.all([
+          api.get('/courses?limit=4'),
           api.get('/news?limit=4&featured=true'),
           api.get('/directory?limit=1'),
           api.get('/tutorials/enrollments?limit=1')
         ]);
-        setEvents(eventsRes.data.events || []);
+        setCatalogCourses(coursesRes.data.courses || []);
         setNews(newsRes.data.news || []);
         
         // Set basic stats (in a real app, you'd have a dedicated stats endpoint)
         setStats({
           totalUsers: 1250, // This would come from an API
-          totalEvents: eventsRes.data.total || 0,
+          totalSchoolCourses: coursesRes.data.total || 0,
           totalBusinesses: directoryRes.data.total || 0,
           totalCourses: tutorialsRes.data.total || 0
         });
@@ -41,7 +41,7 @@ const Home = () => {
         // Set default stats even if API fails
         setStats({
           totalUsers: 1250,
-          totalEvents: 0,
+          totalSchoolCourses: 0,
           totalBusinesses: 0,
           totalCourses: 0
         });
@@ -52,14 +52,6 @@ const Home = () => {
 
     fetchData();
   }, []);
-
-  const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric'
-    });
-  };
 
   return (
     <div className="min-h-screen">
@@ -97,7 +89,7 @@ const Home = () => {
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-32 text-center">
           <h1 className="text-5xl md:text-7xl font-bold mb-6 text-white drop-shadow-2xl animate-fade-in-up">
             <span className="text-blue-800 animate-color-shift hover:text-blue-600 transition-colors duration-300" style={{animationDelay: '0.5s'}}>Dafi</span><span className="text-orange-500 animate-color-shift-orange hover:text-orange-400 transition-colors duration-300" style={{animationDelay: '0.7s'}}>Tech</span><br />
-            <span className="text-purple-300 animate-pulse" style={{animationDelay: '1s'}}>Business</span> • <span className="text-indigo-300 animate-pulse" style={{animationDelay: '1.2s'}}>Events</span> • <span className="text-cyan-300 animate-pulse" style={{animationDelay: '1.4s'}}>Learning</span>
+            <span className="text-purple-300 animate-pulse" style={{animationDelay: '1s'}}>Business</span> • <span className="text-indigo-300 animate-pulse" style={{animationDelay: '1.2s'}}>Courses</span> • <span className="text-cyan-300 animate-pulse" style={{animationDelay: '1.4s'}}>Learning</span>
           </h1>
           
           <h2 className="text-2xl md:text-3xl font-semibold mb-4 text-yellow-300 drop-shadow-lg animate-fade-in-up" style={{animationDelay: '0.8s'}}>
@@ -105,7 +97,7 @@ const Home = () => {
           </h2>
           
           <p className="text-xl md:text-2xl text-gray-100 mb-4 max-w-4xl mx-auto drop-shadow-lg leading-relaxed animate-fade-in-up" style={{animationDelay: '1.2s'}}>
-            Your comprehensive platform for business growth, community events, and professional development. 
+            Your comprehensive platform for business growth, online courses, and professional development. 
             Connect, learn, and succeed in today's digital world.
           </p>
           
@@ -142,8 +134,8 @@ const Home = () => {
             </div>
             <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 border border-white/20 hover:bg-white/20 transition-all duration-300 transform hover:-translate-y-2 hover:scale-105 animate-fade-in-up" style={{animationDelay: '2.8s'}}>
               <Calendar className="w-8 h-8 text-purple-300 mx-auto mb-3 animate-bounce" style={{animationDelay: '3.2s'}} />
-              <h3 className="text-lg font-semibold text-white mb-2">Events & Networking</h3>
-              <p className="text-gray-200 text-sm mb-2">Discover and host professional events</p>
+              <h3 className="text-lg font-semibold text-white mb-2">Online school</h3>
+              <p className="text-gray-200 text-sm mb-2">Video lessons, readings, and structured courses</p>
               <p className="text-yellow-200 text-xs">የሙያዊ ዝግጅቶችን ይፈልጉ እና ያደርጉ</p>
             </div>
             <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 border border-white/20 hover:bg-white/20 transition-all duration-300 transform hover:-translate-y-2 hover:scale-105 animate-fade-in-up" style={{animationDelay: '3.2s'}}>
@@ -181,8 +173,8 @@ const Home = () => {
               <div className="bg-white/10 backdrop-blur-sm rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
                 <Calendar className="w-10 h-10 text-white" />
               </div>
-              <div className="text-3xl font-bold text-white mb-2">{stats.totalEvents}+</div>
-              <div className="text-primary-100">Events Hosted</div>
+              <div className="text-3xl font-bold text-white mb-2">{stats.totalSchoolCourses}+</div>
+              <div className="text-primary-100">School courses</div>
             </div>
             
             <div className="text-center">
@@ -263,22 +255,21 @@ const Home = () => {
               </div>
             </div>
 
-            {/* Events & Networking */}
+            {/* Online school */}
             <div className="relative group animate-fade-in-up" style={{animationDelay: '1.2s'}}>
               <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 to-purple-700/20 rounded-2xl transform group-hover:scale-105 transition-all duration-300 animate-pulse" style={{animationDelay: '1s'}}></div>
               <div className="relative bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-xl border border-purple-200 hover:shadow-2xl transition-all duration-300">
                 <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-600 rounded-full flex items-center justify-center mb-6 mx-auto animate-bounce" style={{animationDelay: '1.7s'}}>
-                  <Calendar className="w-8 h-8 text-white" />
+                  <BookOpen className="w-8 h-8 text-white" />
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-2 text-center">Events & Networking</h3>
-                <h4 className="text-lg font-semibold text-purple-600 mb-4 text-center">ዝግጅቶች እና አውታረድ</h4>
+                <h3 className="text-2xl font-bold text-gray-900 mb-2 text-center">Online school</h3>
+                <h4 className="text-lg font-semibold text-purple-600 mb-4 text-center">የመስመር ላይ ትምህርት ቤት</h4>
                 <p className="text-gray-700 leading-relaxed text-center mb-3">
-                  Discover professional events, workshops, and networking opportunities. Host your own events 
-                  and connect with like-minded professionals in your industry.
+                  Learn with video lessons, readings, and structured pages curated by our team—built for serious
+                  online study.
                 </p>
                 <p className="text-gray-600 text-sm leading-relaxed text-center">
-                  የሙያዊ ዝግጅቶች፣ ስልጠናዎች እና የአውታረድ እድሎችን ይፈልጉ። የራስዎን ዝግጅቶች ያደርጉ 
-                  እና በሙያዎ ውስጥ ከተመሳሳይ አስተሳሰብ ያላቸው ሙያዊዎች ጋር ይገናኙ።
+                  በቪዲዮ፣ በማንበብ እና በተዋቀሩ ገጾች ይማሩ። ለመስመር ላይ ትምህርት የተዘጋጀ።
                 </p>
               </div>
             </div>
@@ -312,7 +303,7 @@ const Home = () => {
             </div>
             <div className="text-center">
               <div className="text-4xl font-bold text-purple-600 mb-2">1000+</div>
-              <div className="text-gray-600">Events Hosted</div>
+              <div className="text-gray-600">Learners</div>
             </div>
             <div className="text-center">
               <div className="text-4xl font-bold text-indigo-600 mb-2">50+</div>
@@ -326,7 +317,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Upcoming Events */}
+      {/* Featured courses */}
       <section className="relative py-20 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 overflow-hidden">
         {/* Background Pattern */}
         <div className="absolute inset-0 opacity-10">
@@ -340,19 +331,19 @@ const Home = () => {
             <div className="text-center lg:text-left mb-8 lg:mb-0">
               <div className="flex justify-center lg:justify-start mb-6">
                 <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center">
-                  <Calendar className="w-8 h-8 text-white" />
+                  <BookOpen className="w-8 h-8 text-white" />
                 </div>
               </div>
               <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
-                <span className="text-blue-400">Upcoming</span> Events
+                <span className="text-blue-400">Featured</span> courses
               </h2>
-              <p className="text-xl text-gray-300">Join our professional networking and learning events</p>
+              <p className="text-xl text-gray-300">Video lessons and readings from our online school</p>
             </div>
             <Link
-              to="/events"
+              to="/courses"
               className="flex items-center bg-gradient-to-r from-blue-500 to-blue-600 text-white px-8 py-4 rounded-xl font-semibold hover:from-blue-600 hover:to-blue-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
             >
-              View All Events <ArrowRight className="w-5 h-5 ml-2" />
+              Browse all courses <ArrowRight className="w-5 h-5 ml-2" />
             </Link>
           </div>
 
@@ -362,24 +353,26 @@ const Home = () => {
                 <div key={i} className="bg-gray-200 animate-pulse rounded-lg h-64"></div>
               ))}
             </div>
-          ) : events.length > 0 ? (
+          ) : catalogCourses.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-              {events.map((event) => (
-                <div key={event._id} className="group bg-white/10 backdrop-blur-sm rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-white/20">
+              {catalogCourses.map((course) => (
+                <div key={course._id} className="group bg-white/10 backdrop-blur-sm rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-white/20">
                   {(() => {
-                    const imageUrl = event.image || (event.images && event.images.length > 0 ? event.images[0].url : null);
+                    const imageUrl =
+                      course.coverImage ||
+                      (course.images && course.images.length > 0 ? course.images[0].url : null);
                     const isPlaceholder = imageUrl && imageUrl.includes('via.placeholder.com');
-                    
+
                     return (
                       <div className="h-48 relative overflow-hidden">
                         {!imageUrl || isPlaceholder ? (
                           <div className="w-full h-full bg-gradient-to-br from-blue-500/20 via-purple-500/20 to-indigo-500/20 flex items-center justify-center">
-                            <Calendar className="w-12 h-12 text-white" />
+                            <BookOpen className="w-12 h-12 text-white" />
                           </div>
                         ) : (
                           <img
                             src={imageUrl}
-                            alt={event.title}
+                            alt={course.title}
                             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                             onError={(e) => {
                               e.target.style.display = 'none';
@@ -390,18 +383,16 @@ const Home = () => {
                             }}
                           />
                         )}
-                        <div 
+                        <div
                           className="hidden image-fallback w-full h-full bg-gradient-to-br from-blue-500/20 via-purple-500/20 to-indigo-500/20 items-center justify-center"
                           style={{ display: 'none' }}
                         >
-                          <Calendar className="w-12 h-12 text-white" />
+                          <BookOpen className="w-12 h-12 text-white" />
                         </div>
-                        {/* Overlay gradient */}
                         <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
-                        {/* Category badge */}
                         <div className="absolute top-4 left-4">
                           <span className="bg-white/20 backdrop-blur-sm text-white px-3 py-1 rounded-full text-xs font-semibold capitalize border border-white/30">
-                            {event.category}
+                            {course.category}
                           </span>
                         </div>
                       </div>
@@ -409,21 +400,19 @@ const Home = () => {
                   })()}
                   <div className="p-6">
                     <h3 className="text-xl font-bold text-white mb-3 line-clamp-2 group-hover:text-blue-300 transition-colors">
-                      {event.title}
+                      {course.title}
                     </h3>
-                    <div className="flex items-center text-gray-300 mb-3">
-                      <Clock className="w-4 h-4 mr-2 text-blue-400" />
-                      <span className="text-sm">{formatDate(event.date)} at {event.time}</span>
-                    </div>
-                    <div className="flex items-center text-gray-300 mb-4">
-                      <MapPin className="w-4 h-4 mr-2 text-purple-400" />
-                      <span className="text-sm">{event.location.name}</span>
-                    </div>
+                    <p className="text-gray-300 text-sm mb-4 line-clamp-3">
+                      {course.summary ||
+                        `${(course.description || '').replace(/<[^>]+>/g, '').slice(0, 120)}${
+                          (course.description || '').length > 120 ? '…' : ''
+                        }`}
+                    </p>
                     <Link
-                      to={`/events/${event._id}`}
+                      to={`/courses/${course._id}`}
                       className="text-blue-400 hover:text-blue-300 font-semibold flex items-center transition-colors"
                     >
-                      Learn More <ArrowRight className="w-4 h-4 ml-1" />
+                      Open course <ArrowRight className="w-4 h-4 ml-1" />
                     </Link>
                   </div>
                 </div>
@@ -432,10 +421,10 @@ const Home = () => {
           ) : (
             <div className="text-center py-16">
               <div className="w-20 h-20 bg-gradient-to-br from-blue-500/20 to-blue-600/20 rounded-full flex items-center justify-center mx-auto mb-6">
-                <Calendar className="w-10 h-10 text-blue-400" />
+                <BookOpen className="w-10 h-10 text-blue-400" />
               </div>
-              <p className="text-gray-300 text-xl mb-2">No upcoming events at the moment.</p>
-              <p className="text-gray-400">Check back soon for new events!</p>
+              <p className="text-gray-300 text-xl mb-2">No published courses yet.</p>
+              <p className="text-gray-400">Check back soon for new lessons.</p>
             </div>
           )}
         </div>
@@ -579,10 +568,10 @@ const Home = () => {
 
           <div className="text-center mt-12">
             <Link
-              to="/tutorials"
+              to="/courses"
               className="inline-flex items-center bg-gradient-to-r from-indigo-500 to-indigo-600 text-white px-8 py-4 rounded-xl font-semibold hover:from-indigo-600 hover:to-indigo-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
             >
-              View All Courses <ArrowRight className="w-5 h-5 ml-2" />
+              Explore the course catalog <ArrowRight className="w-5 h-5 ml-2" />
             </Link>
           </div>
         </div>
