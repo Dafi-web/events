@@ -21,6 +21,7 @@ import CodePracticePanel from '../components/CodePracticePanel';
 import VideoEmbed from '../components/VideoEmbed';
 import LessonAnimatedPlayer from '../components/LessonAnimatedPlayer';
 import LessonQuiz from '../components/LessonQuiz';
+import CourseExplainerPanel from '../components/CourseExplainerPanel';
 
 const CATEGORY_LABELS = {
   stem: 'STEM',
@@ -260,6 +261,8 @@ const CourseDetail = () => {
           <main className="lg:col-span-8 space-y-10">
             {activeSection === 'overview' && (
               <div className="space-y-8">
+                <CourseExplainerPanel explainer={course.courseExplainer} />
+
                 {pages.length > 0 && (
                   <div className="rounded-2xl border-2 border-indigo-200/80 bg-gradient-to-br from-indigo-50 via-white to-violet-50 p-6 md:p-8 shadow-md shadow-indigo-100/80">
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">

@@ -42,6 +42,7 @@ const AdminDashboard = () => {
     isPublished: true,
     courseTipsJson: '[]',
     sampleProjectJson: '',
+    courseExplainerJson: '',
     pages: [
       {
         title: '',
@@ -106,6 +107,7 @@ const AdminDashboard = () => {
       isPublished: true,
       courseTipsJson: '[]',
       sampleProjectJson: '',
+      courseExplainerJson: '',
       pages: [
         {
           title: '',
@@ -172,6 +174,14 @@ const AdminDashboard = () => {
                     ? s.theme
                     : 'indigo'
                 };
+                const nar = String(s.narrationUrl || '').trim();
+                if (nar) slide.narrationUrl = nar;
+                const mu = String(s.mediaUrl || '').trim();
+                if (mu) {
+                  slide.mediaUrl = mu;
+                  const mk = String(s.mediaKind || '').toLowerCase();
+                  if (['gif', 'image', 'video'].includes(mk)) slide.mediaKind = mk;
+                }
                 const pr = s.practice;
                 if (pr && String(pr.title || '').trim()) {
                   slide.practice = {
@@ -202,6 +212,7 @@ const AdminDashboard = () => {
 
     let courseTipsPayload = '[]';
     let sampleProjectPayload = '{}';
+    let courseExplainerPayload = '{}';
     try {
       if (newCourse.courseTipsJson && newCourse.courseTipsJson.trim()) {
         JSON.parse(newCourse.courseTipsJson);
@@ -211,8 +222,12 @@ const AdminDashboard = () => {
         JSON.parse(newCourse.sampleProjectJson);
         sampleProjectPayload = String(newCourse.sampleProjectJson).trim();
       }
+      if (newCourse.courseExplainerJson && String(newCourse.courseExplainerJson).trim()) {
+        JSON.parse(newCourse.courseExplainerJson);
+        courseExplainerPayload = String(newCourse.courseExplainerJson).trim();
+      }
     } catch {
-      setCourseError('Invalid course tips or sample project JSON.');
+      setCourseError('Invalid course tips, sample project, or course explainer JSON.');
       return;
     }
 
@@ -227,6 +242,7 @@ const AdminDashboard = () => {
       formData.append('pages', JSON.stringify(validPages));
       formData.append('courseTips', courseTipsPayload);
       formData.append('sampleProject', sampleProjectPayload);
+      formData.append('courseExplainer', courseExplainerPayload);
 
       if (editingCourse) {
         formData.append(
@@ -361,6 +377,22 @@ const AdminDashboard = () => {
             null,
             2
           )
+            : '';
+    const ce = course.courseExplainer;
+    const courseExplainerJson =
+      ce && (ce.videoUrl || ce.audioUrl || ce.visualUrl)
+        ? JSON.stringify(
+            {
+              title: ce.title || 'Course introduction',
+              videoUrl: ce.videoUrl || '',
+              audioUrl: ce.audioUrl || '',
+              visualUrl: ce.visualUrl || '',
+              visualKind: ce.visualKind || '',
+              caption: ce.caption || ''
+            },
+            null,
+            2
+          )
         : '';
     setNewCourse({
       title: course.title || '',
@@ -375,6 +407,7 @@ const AdminDashboard = () => {
         2
       ),
       sampleProjectJson,
+      courseExplainerJson,
       pages:
         course.pages && course.pages.length
           ? course.pages.map((p) => ({
@@ -399,6 +432,9 @@ const AdminDashboard = () => {
                 body: s.body || '',
                 variant: s.variant || 'content',
                 theme: s.theme || 'indigo',
+                narrationUrl: s.narrationUrl || '',
+                mediaUrl: s.mediaUrl || '',
+                mediaKind: s.mediaKind || '',
                 practice: s.practice
                   ? {
                       title: s.practice.title || '',
@@ -463,7 +499,10 @@ const AdminDashboard = () => {
       title: '',
       body: '',
       variant: 'content',
-      theme: 'indigo'
+      theme: 'indigo',
+      narrationUrl: '',
+      mediaUrl: '',
+      mediaKind: ''
     });
     pages[pageIdx] = { ...pages[pageIdx], slides };
     setNewCourse({ ...newCourse, pages });
@@ -760,6 +799,25 @@ const AdminDashboard = () => {
                           </div>
                         </div>
 
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Course intro explainer (JSON — optional video, voice, GIF/image on overview)
+                          </label>
+                          <p className="text-xs text-gray-500 mb-2">
+                            Host files on Cloudinary or any HTTPS URL. YouTube links work for video. Use{' '}
+                            <code className="text-xs">{}</code> to clear.
+                          </p>
+                          <textarea
+                            placeholder={`{\n  "title": "Welcome to the course",\n  "videoUrl": "https://youtube.com/...",\n  "audioUrl": "https://.../intro.mp3",\n  "visualUrl": "https://.../demo.gif",\n  "visualKind": "gif",\n  "caption": "..."\n}`}
+                            value={newCourse.courseExplainerJson}
+                            onChange={(e) =>
+                              setNewCourse({ ...newCourse, courseExplainerJson: e.target.value })
+                            }
+                            className="w-full px-3 py-2 border rounded-lg font-mono text-xs"
+                            rows={6}
+                          />
+                        </div>
+
                         <div className="border-t border-gray-200 pt-4">
                           <div className="flex justify-between items-center mb-2">
                             <span className="text-sm font-medium text-gray-700">Reading pages (lessons)</span>
@@ -867,6 +925,36 @@ const AdminDashboard = () => {
                                           <option value="violet">theme: violet</option>
                                         </select>
                                       </div>
+                                      <input
+                                        type="url"
+                                        placeholder="Slide voice-over URL (MP3 / M4A / OGG — optional)"
+                                        value={sl.narrationUrl || ''}
+                                        onChange={(e) =>
+                                          updateSlideField(idx, sidx, 'narrationUrl', e.target.value)
+                                        }
+                                        className="w-full px-2 py-1.5 border rounded text-xs"
+                                      />
+                                      <input
+                                        type="url"
+                                        placeholder="Teaching visual URL — GIF, image, or short MP4/WebM (optional)"
+                                        value={sl.mediaUrl || ''}
+                                        onChange={(e) =>
+                                          updateSlideField(idx, sidx, 'mediaUrl', e.target.value)
+                                        }
+                                        className="w-full px-2 py-1.5 border rounded text-xs"
+                                      />
+                                      <select
+                                        value={sl.mediaKind || ''}
+                                        onChange={(e) =>
+                                          updateSlideField(idx, sidx, 'mediaKind', e.target.value)
+                                        }
+                                        className="w-full px-2 py-1.5 border rounded text-xs"
+                                      >
+                                        <option value="">Visual type: auto from URL</option>
+                                        <option value="gif">GIF</option>
+                                        <option value="image">Image</option>
+                                        <option value="video">Video</option>
+                                      </select>
                                     </div>
                                   ))}
                                 </div>

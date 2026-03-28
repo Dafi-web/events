@@ -25,6 +25,17 @@ function normalizePractice(pr) {
 
 const SLIDE_VARIANTS = new Set(['intro', 'content', 'practice', 'summary']);
 const SLIDE_THEMES = new Set(['indigo', 'emerald', 'amber', 'rose', 'slate', 'violet']);
+const SLIDE_MEDIA_KINDS = new Set(['', 'gif', 'image', 'video']);
+
+function inferMediaKind(url, hint) {
+  const h = String(hint || '').toLowerCase();
+  if (SLIDE_MEDIA_KINDS.has(h) && h) return h;
+  const u = String(url || '');
+  if (/\.gif(\?|#|$)/i.test(u)) return 'gif';
+  if (/\.(mp4|webm|ogg)(\?|#|$)/i.test(u)) return 'video';
+  if (/\.(png|jpe?g|webp|svg|avif)(\?|#|$)/i.test(u)) return 'image';
+  return '';
+}
 
 function normalizeSlide(s) {
   if (!s || typeof s !== 'object') return null;
@@ -34,8 +45,18 @@ function normalizeSlide(s) {
   const theme = SLIDE_THEMES.has(s.theme) ? s.theme : 'indigo';
   const body = String(s.body || '');
   const practice = s.practice ? normalizePractice(s.practice) : null;
+  const narrationUrl = String(s.narrationUrl || '').trim();
+  const mediaUrl = String(s.mediaUrl || '').trim();
+  let mediaKind = inferMediaKind(mediaUrl, s.mediaKind);
+  if (mediaUrl && !mediaKind) mediaKind = 'image';
+
   const out = { title, body, variant, theme };
   if (practice) out.practice = practice;
+  if (narrationUrl) out.narrationUrl = narrationUrl;
+  if (mediaUrl) {
+    out.mediaUrl = mediaUrl;
+    out.mediaKind = mediaKind;
+  }
   return out;
 }
 
@@ -76,6 +97,35 @@ function parseTipsFromBody(body) {
 }
 
 /** @returns {object|null|undefined} project, null to clear, undefined if absent or invalid JSON */
+function parseCourseExplainerFromBody(body) {
+  if (!body.courseExplainer) return undefined;
+  try {
+    const raw =
+      typeof body.courseExplainer === 'string'
+        ? JSON.parse(body.courseExplainer)
+        : body.courseExplainer;
+    if (!raw || typeof raw !== 'object') return null;
+    const title = String(raw.title || 'Course introduction').trim() || 'Course introduction';
+    const videoUrl = String(raw.videoUrl || '').trim();
+    const audioUrl = String(raw.audioUrl || '').trim();
+    const visualUrl = String(raw.visualUrl || '').trim();
+    let visualKind = inferMediaKind(visualUrl, raw.visualKind);
+    if (visualUrl && !visualKind) visualKind = 'image';
+    const caption = String(raw.caption || '');
+    if (!videoUrl && !audioUrl && !visualUrl) return null;
+    return {
+      title,
+      videoUrl,
+      audioUrl,
+      visualUrl,
+      visualKind: SLIDE_MEDIA_KINDS.has(visualKind) ? visualKind : '',
+      caption
+    };
+  } catch {
+    return undefined;
+  }
+}
+
 function parseSampleProjectFromBody(body) {
   if (!body.sampleProject) return undefined;
   try {
@@ -276,6 +326,7 @@ router.post(
 
       const tips = parseTipsFromBody(req.body);
       const sampleProject = parseSampleProjectFromBody(req.body);
+      const courseExplainer = parseCourseExplainerFromBody(req.body);
 
       const courseData = {
         title: req.body.title.trim(),
@@ -291,6 +342,7 @@ router.post(
       };
       if (tips.length) courseData.tips = tips;
       if (sampleProject) courseData.sampleProject = sampleProject;
+      if (courseExplainer) courseData.courseExplainer = courseExplainer;
 
       if (images.length > 0) {
         courseData.coverImage = images[0].url;
@@ -388,6 +440,7 @@ router.put(
 
       const tips = parseTipsFromBody(req.body);
       const sampleProject = parseSampleProjectFromBody(req.body);
+      const courseExplainer = parseCourseExplainerFromBody(req.body);
 
       course.title = req.body.title.trim();
       course.summary = (req.body.summary || '').trim();
@@ -404,6 +457,13 @@ router.put(
           course.set('sampleProject', undefined);
         } else if (sampleProject) {
           course.sampleProject = sampleProject;
+        }
+      }
+      if (Object.prototype.hasOwnProperty.call(req.body, 'courseExplainer')) {
+        if (courseExplainer === null) {
+          course.set('courseExplainer', undefined);
+        } else if (courseExplainer) {
+          course.courseExplainer = courseExplainer;
         }
       }
 

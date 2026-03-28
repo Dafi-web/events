@@ -8,7 +8,8 @@ import {
   CheckCircle,
   Clapperboard,
   Pause,
-  Play
+  Play,
+  Volume2
 } from 'lucide-react';
 import CodePracticePanel from './CodePracticePanel';
 
@@ -30,11 +31,46 @@ const VARIANT_ICON = {
 
 const AUTO_MS = 10000;
 
+function inferSlideMediaKind(url, hint) {
+  const h = String(hint || '').toLowerCase();
+  if (['gif', 'image', 'video'].includes(h)) return h;
+  const u = String(url || '');
+  if (/\.gif(\?|#|$)/i.test(u)) return 'gif';
+  if (/\.(mp4|webm|ogg)(\?|#|$)/i.test(u)) return 'video';
+  if (/\.(png|jpe?g|webp|svg)(\?|#|$)/i.test(u)) return 'image';
+  return 'image';
+}
+
+function SlideTeachingMedia({ mediaUrl, mediaKind }) {
+  if (!mediaUrl || !String(mediaUrl).trim()) return null;
+  const url = mediaUrl.trim();
+  const kind = inferSlideMediaKind(url, mediaKind);
+  if (kind === 'video') {
+    return (
+      <div className="mb-6 rounded-2xl overflow-hidden ring-2 ring-white/40 shadow-2xl bg-black/30 max-w-2xl mx-auto w-full">
+        <video src={url} controls playsInline className="w-full max-h-56 md:max-h-64 object-contain" />
+      </div>
+    );
+  }
+  return (
+    <div className="mb-6 rounded-2xl overflow-hidden ring-2 ring-white/40 shadow-2xl bg-black/20 max-w-2xl mx-auto w-full flex justify-center">
+      <img
+        src={url}
+        alt=""
+        className="max-h-56 md:max-h-72 w-full object-contain"
+        loading="lazy"
+      />
+    </div>
+  );
+}
+
 const LessonAnimatedPlayer = ({ slides, resetKey, lessonIndex = 0 }) => {
   const [idx, setIdx] = useState(0);
   const [playing, setPlaying] = useState(true);
   const [tick, setTick] = useState(0);
   const timerRef = useRef(null);
+  const audioRef = useRef(null);
+  const [narrationBlocked, setNarrationBlocked] = useState(false);
 
   useEffect(() => {
     setIdx(0);
@@ -45,6 +81,28 @@ const LessonAnimatedPlayer = ({ slides, resetKey, lessonIndex = 0 }) => {
   const total = slides?.length || 0;
   const safe = total ? Math.min(Math.max(0, idx), total - 1) : 0;
   const slide = total ? slides[safe] : null;
+
+  const narrationUrl = slide && slide.narrationUrl ? String(slide.narrationUrl).trim() : '';
+
+  useEffect(() => {
+    const el = audioRef.current;
+    if (!el) return;
+    if (!narrationUrl) {
+      el.pause();
+      el.removeAttribute('src');
+      el.load();
+      setNarrationBlocked(false);
+      return;
+    }
+    el.pause();
+    el.src = narrationUrl;
+    el.load();
+    setNarrationBlocked(true);
+    const p = el.play();
+    if (p !== undefined) {
+      p.then(() => setNarrationBlocked(false)).catch(() => setNarrationBlocked(true));
+    }
+  }, [narrationUrl, safe, resetKey]);
 
   const go = useCallback(
     (dir) => {
@@ -106,14 +164,39 @@ const LessonAnimatedPlayer = ({ slides, resetKey, lessonIndex = 0 }) => {
   const theme = slide.theme && THEME_BG[slide.theme] ? slide.theme : 'indigo';
   const grad = THEME_BG[theme];
 
+  const playNarration = () => {
+    const el = audioRef.current;
+    if (!el || !narrationUrl) return;
+    el.play()
+      .then(() => setNarrationBlocked(false))
+      .catch(() => {});
+  };
+
   return (
     <section className="space-y-4" aria-label="Animated lesson walkthrough">
+      <audio ref={audioRef} className="sr-only" playsInline preload="auto" />
+
       <div className="flex items-center justify-between gap-3 flex-wrap">
         <h4 className="text-sm font-semibold text-slate-500 uppercase tracking-wide flex items-center gap-2">
           <Clapperboard className="w-4 h-4 text-indigo-600" />
           Animated walkthrough
         </h4>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 flex-wrap">
+          {narrationUrl && (
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-800">
+              <Volume2 className="w-3.5 h-3.5" />
+              Voice-over
+              {narrationBlocked && (
+                <button
+                  type="button"
+                  onClick={playNarration}
+                  className="ml-1 underline decoration-emerald-600 hover:text-emerald-950"
+                >
+                  Play
+                </button>
+              )}
+            </span>
+          )}
           <button
             type="button"
             onClick={() => setPlaying((p) => !p)}
@@ -143,6 +226,8 @@ const LessonAnimatedPlayer = ({ slides, resetKey, lessonIndex = 0 }) => {
           key={`${resetKey}-${safe}`}
           className="relative p-6 md:p-10 text-white flex flex-col justify-center min-h-[300px] md:min-h-[360px] lesson-animated-scene"
         >
+          <SlideTeachingMedia mediaUrl={slide.mediaUrl} mediaKind={slide.mediaKind} />
+
           <div className="flex items-start gap-4 mb-4">
             <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white/20 backdrop-blur-md ring-1 ring-white/30">
               <Icon className="w-6 h-6 text-white" strokeWidth={2} />

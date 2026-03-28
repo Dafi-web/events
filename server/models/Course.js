@@ -29,6 +29,15 @@ const slideSchema = new mongoose.Schema(
       enum: ['indigo', 'emerald', 'amber', 'rose', 'slate', 'violet'],
       default: 'indigo'
     },
+    /** Optional voice-over (MP3, M4A, OGG, WAV URL — host on Cloudinary/CDN) */
+    narrationUrl: { type: String, default: '', trim: true },
+    /** Optional teaching visual: GIF, image, or short video URL */
+    mediaUrl: { type: String, default: '', trim: true },
+    mediaKind: {
+      type: String,
+      enum: ['', 'gif', 'image', 'video'],
+      default: ''
+    },
     /** Optional mini exercise on this slide (same shape as lesson practices) */
     practice: { type: practiceSchema, required: false }
   },
@@ -67,6 +76,23 @@ const sampleProjectSchema = new mongoose.Schema(
     description: { type: String, default: '' },
     repoUrl: { type: String, default: '' },
     codeSample: { type: String, default: '' }
+  },
+  { _id: false }
+);
+
+/** Optional rich intro on course overview: explainer video, voice, GIF/visual */
+const courseExplainerSchema = new mongoose.Schema(
+  {
+    title: { type: String, default: 'Course introduction' },
+    videoUrl: { type: String, default: '', trim: true },
+    audioUrl: { type: String, default: '', trim: true },
+    visualUrl: { type: String, default: '', trim: true },
+    visualKind: {
+      type: String,
+      enum: ['', 'gif', 'image', 'video'],
+      default: ''
+    },
+    caption: { type: String, default: '' }
   },
   { _id: false }
 );
@@ -123,6 +149,8 @@ const courseSchema = new mongoose.Schema({
   tips: { type: [tipItemSchema], default: [] },
   /** Starter repo / sample project for learners */
   sampleProject: sampleProjectSchema,
+  /** Intro block: video / audio / GIF to explain the course (overview tab) */
+  courseExplainer: courseExplainerSchema,
   category: {
     type: String,
     enum: ['stem', 'languages', 'arts', 'business', 'technology', 'general'],
