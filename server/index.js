@@ -54,7 +54,7 @@ const allowedOrigins = process.env.NODE_ENV === 'production'
       'https://www.dafitech.org',
       'https://api.dafitech.org',
       process.env.FRONTEND_URL, // Allow frontend from environment variable
-      ...(process.env.ADDITIONAL_ORIGINS ? process.env.ADDITIONAL_ORIGINS.split(',') : [])
+      ...(process.env.ADDITIONAL_ORIGINS ? process.env.ADDITIONAL_ORIGINS.split(',').map((s) => s.trim()) : [])
     ].filter(Boolean) // Remove undefined values
   : [
       'http://localhost:3000',
@@ -64,12 +64,23 @@ const allowedOrigins = process.env.NODE_ENV === 'production'
       'http://localhost:5000'
     ];
 
+/** Vercel preview & production URLs (*.vercel.app) — not enumerable in a fixed list */
+function isVercelAppOrigin(origin) {
+  if (!origin || process.env.NODE_ENV !== 'production') return false;
+  try {
+    const u = new URL(origin);
+    return u.protocol === 'https:' && u.hostname.endsWith('.vercel.app');
+  } catch {
+    return false;
+  }
+}
+
 app.use(cors({
   origin: (origin, callback) => {
     // Allow requests with no origin (like mobile apps, Postman, or server-to-server)
     if (!origin) return callback(null, true);
-    
-    if (allowedOrigins.includes(origin)) {
+
+    if (allowedOrigins.includes(origin) || isVercelAppOrigin(origin)) {
       callback(null, true);
     } else {
       console.warn(`⚠️  CORS blocked request from origin: ${origin}`);
