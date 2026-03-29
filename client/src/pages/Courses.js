@@ -57,9 +57,20 @@ const Courses = () => {
                 Learn at your own pace
               </h1>
               <p className="text-lg text-indigo-100/90 max-w-2xl leading-relaxed">
-                Video lessons, readings, and structured pages curated by our team. Open a course to watch,
-                read, and discuss with the community.
+                Video lessons, readings, and structured pages curated by our team. Browse everything here;
+                open a course to watch, read, and discuss with the community.
               </p>
+              {!user && (
+                <p className="mt-4 text-sm text-indigo-200/95 max-w-2xl">
+                  <Link
+                    to="/login"
+                    className="font-semibold text-white underline decoration-white/60 underline-offset-2 hover:decoration-white"
+                  >
+                    Sign in
+                  </Link>{' '}
+                  to access full course content after you choose a course.
+                </p>
+              )}
             </div>
             {user?.role === 'admin' && (
               <Link

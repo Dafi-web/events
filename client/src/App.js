@@ -38,7 +38,14 @@ function App() {
               <Route index element={<Home />} />
               <Route path="about" element={<About />} />
               <Route path="courses" element={<Courses />} />
-              <Route path="courses/:id" element={<CourseDetail />} />
+              <Route
+                path="courses/:id"
+                element={
+                  <ProtectedRoute>
+                    <CourseDetail />
+                  </ProtectedRoute>
+                }
+              />
               <Route path="events" element={<Navigate to="/courses" replace />} />
               <Route path="events/:id" element={<Navigate to="/courses" replace />} />
               <Route path="news" element={<News />} />

@@ -1,5 +1,5 @@
 const express = require('express');
-const { auth, adminAuth, optionalAuth } = require('../middleware/auth');
+const { auth, adminAuth } = require('../middleware/auth');
 const { uploadFields } = require('../middleware/cloudinary-upload');
 const Course = require('../models/Course');
 
@@ -248,16 +248,16 @@ router.get('/', async (req, res) => {
 });
 
 // @route   GET /api/courses/:id
-// @desc    Single course (unpublished visible to admin only)
-// @access  Public (+ optional admin)
-router.get('/:id', optionalAuth, async (req, res) => {
+// @desc    Single course — requires login; unpublished visible to admin only
+// @access  Private (JWT)
+router.get('/:id', auth, async (req, res) => {
   try {
     const course = await Course.findById(req.params.id).populate('createdBy', 'name email');
     if (!course) {
       return res.status(404).json({ msg: 'Course not found' });
     }
     if (!course.isPublished) {
-      if (!req.user || req.user.role !== 'admin') {
+      if (req.user.role !== 'admin') {
         return res.status(404).json({ msg: 'Course not found' });
       }
     }
@@ -507,9 +507,9 @@ router.delete('/:id', auth, adminAuth, async (req, res) => {
 });
 
 // @route   POST /api/courses/:id/view
-// @desc    Track view
-// @access  Public
-router.post('/:id/view', async (req, res) => {
+// @desc    Track view (same access as course detail)
+// @access  Private (JWT)
+router.post('/:id/view', auth, async (req, res) => {
   try {
     const course = await Course.findById(req.params.id);
     if (!course || !course.isPublished) {
